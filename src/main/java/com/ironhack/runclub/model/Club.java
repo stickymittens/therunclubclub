@@ -14,10 +14,6 @@ public class Club {
 
     private String clubDescription;
 
-    @ManyToOne
-    @JoinColumn(name = "club_owner_id")
-    private ClubOwner clubOwner;
-
     //based on existing events
     private int totalRunners;
     private int totalDistance;

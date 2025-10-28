@@ -2,7 +2,7 @@ package com.ironhack.runclub.service;
 
 import com.ironhack.runclub.exceptions.NoItemWithThisId;
 import com.ironhack.runclub.model.Club;
-import com.ironhack.runclub.respository.ClubRepository;
+import com.ironhack.runclub.repository.ClubRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

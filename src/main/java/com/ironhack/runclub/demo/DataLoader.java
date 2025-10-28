@@ -3,10 +3,14 @@ package com.ironhack.runclub.demo;
 import com.ironhack.runclub.enums.CitiesEnum;
 import com.ironhack.runclub.model.Club;
 import com.ironhack.runclub.model.Event;
+import com.ironhack.runclub.model.Role;
 import com.ironhack.runclub.model.User;
-import com.ironhack.runclub.respository.ClubRepository;
-import com.ironhack.runclub.respository.EventRepository;
-import com.ironhack.runclub.respository.UserRepository;
+import com.ironhack.runclub.repository.ClubRepository;
+import com.ironhack.runclub.repository.EventRepository;
+import com.ironhack.runclub.repository.RoleRepository;
+import com.ironhack.runclub.repository.UserRepository;
+import com.ironhack.runclub.service.RoleService;
+import com.ironhack.runclub.service.UserService;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -17,7 +21,8 @@ import java.time.OffsetDateTime;
 public class DataLoader {
     @Bean
     CommandLineRunner loadData(
-            UserRepository userRepository,
+            UserService userService,
+            RoleService roleService,
             ClubRepository clubRepository,
             EventRepository eventRepository
     ){
@@ -26,9 +31,19 @@ public class DataLoader {
 
 
                 //users
-                User user1 = userRepository.save(new User("Samantha Jones", "sjones@email.com", CitiesEnum.BARCELONA));
-                User user2 = userRepository.save(new User("Alex Brown", "abrown@email.com", CitiesEnum.BARCELONA));
-                User user3 = userRepository.save(new User("Ala Ho", "aho@email.com", CitiesEnum.BARCELONA));
+                roleService.save(new Role("ROLE_USER"));
+                roleService.save(new Role("ROLE_ADMIN"));
+
+                userService.saveUser(new User("John Doe", "john", "1234"));
+                userService.saveUser(new User("James Smith", "james", "1234"));
+                userService.saveUser(new User("Jane Carry", "jane", "1234"));
+                userService.saveUser(new User("Chris Anderson", "chris", "1234"));
+
+                roleService.addRoleToUser("john", "ROLE_USER");
+                roleService.addRoleToUser("james", "ROLE_ADMIN");
+                roleService.addRoleToUser("jane", "ROLE_USER");
+                roleService.addRoleToUser("chris", "ROLE_ADMIN");
+                roleService.addRoleToUser("chris", "ROLE_USER");
 
                 //clubs
                 Club club1 = clubRepository.save(new Club("Itinerari", null));

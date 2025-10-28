@@ -8,7 +8,7 @@
   }
 
   function opeFilteredEvents(){
-    router.push('/filtered-events')
+    router.push('/events')
   }
 </script>
 

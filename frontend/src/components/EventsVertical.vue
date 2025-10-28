@@ -99,22 +99,34 @@ onMounted(() => {
 onUnmounted(() => {
   document.removeEventListener('click', handleClickOutside)
 })
+
+watch(
+    () => filterModalVisible.value,
+    (isVisible) => {
+        document.body.style.overflow = isVisible ? 'hidden' : 'auto'
+    }
+)
 </script>
 
 <template>
   <CitiesModal v-if="citiesModalStore.visible" class="cities-modal"/>
 
   <div v-if="filterModalVisible" ref="modalBackground" class="modal-background"></div>
-  <div v-if="filterModalVisible" ref="filterModal" class="filter-modal">
-    <div v-if="selectedFilter === 'time'">
+  <div v-if="filterModalVisible" ref="filterModal">
+
+    <div v-if="selectedFilter === 'all'" class="all-options-modal">
+      <p>showing all options</p>
+    </div>
+
+    <div v-if="selectedFilter === 'time'" class="filter-modal">
       <p>showing time options</p>
     </div>
 
-    <div v-if="selectedFilter === 'pace'">
+    <div v-if="selectedFilter === 'pace'" class="filter-modal">
       <p>Showing pace options</p>
     </div>
 
-    <div v-if="selectedFilter === 'distance'">
+    <div v-if="selectedFilter === 'distance'" class="filter-modal">
       <p>showing distance options</p>
     </div>
   </div>
@@ -129,18 +141,12 @@ onUnmounted(() => {
       <h1 v-else></h1>
     </nav>
 
-    <p>MODAL VISIBLE {{filterModalVisible}}</p>
-
     <ul class="filters">
       <li class="filter" :class="{ selected: selectedFilter === 'all' }" @click.stop="selectFilter('all')">Icon</li>
       <li class="filter" :class="{ selected: selectedFilter === 'time' }" @click.stop="selectFilter('time')">Start Time</li>
       <li class="filter" :class="{ selected: selectedFilter === 'pace' }" @click.stop="selectFilter('pace')">Pace</li>
       <li class="filter" :class="{ selected: selectedFilter === 'distance' }" @click.stop="selectFilter('distance')">Distance</li>
     </ul>
-
-    <div id="all-filters-modal">
-      <p>showing all filtering options</p>
-    </div>
 
     <div class="ul-container">
       <div v-if="loading">Loading events...</div>
@@ -233,6 +239,23 @@ h1{
   align-items: center;
 }
 
+.all-options-modal{
+  position: fixed;
+  left: 0;
+
+  height: 100vh;
+  width: 100vw;
+
+  color: white;
+  background-color: #181818;
+  z-index: 1001;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+}
+
 .modal-background{
   position: fixed;
   left: 0;
@@ -240,7 +263,7 @@ h1{
   height: 100vh;
   width: 100vw;
   background-color: black;
-  opacity: 0.8;
+  opacity: 0.85;
   z-index: 1000;
 }
 

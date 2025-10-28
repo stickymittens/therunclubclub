@@ -1,43 +1,35 @@
 package com.ironhack.runclub.service;
 
-import com.ironhack.runclub.exceptions.NoItemWithThisId;
 import com.ironhack.runclub.model.User;
-import com.ironhack.runclub.respository.UserRepository;
-import org.springframework.stereotype.Service;
 
 import java.util.List;
 
-@Service
-public class UserService {
-    private final UserRepository userRepository;
+/**
+ * The UserServiceInterface is an interface that defines the methods that are available to perform operations on User entities.
+ */
+public interface UserService {
 
-    public UserService(UserRepository userRepository){
-        this.userRepository = userRepository;
-    }
+    /**
+     * This method is used to save a User entity to the database.
+     *
+     * @param user the User entity to be saved.
+     * @return the saved User entity.
+     */
+    User saveUser(User user);
 
-    //CRUD
-    //create
-    public User createUser(User user){
-        return user;
-    }
+    /**
+     * This method is used to retrieve a User from the database by its username.
+     *
+     * @param username the username of the User to be retrieved.
+     * @return the retrieved User entity.
+     */
+    User getUser(String username);
 
-    //read all users
-    public List<User> getAllUsers(){
-        return userRepository.findAll();
-    }
-
-    //read user by id
-    public User getUserById(Long id){
-        return userRepository
-                .findById(id)
-                .orElseThrow(() -> new NoItemWithThisId("No user with this ID"));
-    }
-
-    //update
-    //create update for each field
-
-    //delete
-    public void deleteUser(Long id){
-        userRepository.deleteById(id);
-    }
+    /**
+     * This method is used to retrieve all User entities from the database.
+     *
+     * @return a List of all User entities.
+     */
+    List<User> getUsers();
 }
+

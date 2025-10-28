@@ -1,68 +1,45 @@
 package com.ironhack.runclub.model;
 
-import com.ironhack.runclub.enums.CitiesEnum;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Email;
-import jakarta.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
+import static jakarta.persistence.FetchType.EAGER;
+
+/**
+ * Entity class for representing a User in the database
+ */
 @Entity
+@Data
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
+
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @NotNull (message = "Name must be set")
-    private String userName;
+    private String name;
 
-    @NotNull
-    @Email
-    private String email;
+    private String username;
 
-    @NotNull
-    @Enumerated(EnumType.STRING)
-    private CitiesEnum city;
+    private String password;
 
+    @ManyToMany(fetch = EAGER)
+    @JoinTable(
+            name = "user_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id")
+    )
+    private Collection<Role> roles = new ArrayList<>();
 
-    //getters and setters
-    public Long getId() {
-        return id;
+    public User(String name, String username, String password) {
+        this.name = name;
+        this.username = username;
+        this.password = password;
     }
-
-    public void setId(Long id) {
-        this.id = id;
-    }
-
-    public String getName() {
-        return userName;
-    }
-
-    public void setName(String name) {
-        this.userName = name;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public void setEmail(String email) {
-        this.email = email;
-    }
-
-    public CitiesEnum getCity() {
-        return city;
-    }
-
-    public void setCity(CitiesEnum city) {
-        this.city = city;
-    }
-
-
-    //constructors
-    public User(String userName, String email, CitiesEnum city) {
-        this.userName = userName;
-        this.email = email;
-        this.city = city;
-    }
-
-    public User(){}
 }

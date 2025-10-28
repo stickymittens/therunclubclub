@@ -1,45 +1,42 @@
 package com.ironhack.runclub.controller;
 
+
+
 import com.ironhack.runclub.model.User;
 import com.ironhack.runclub.service.UserService;
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
+@RequestMapping("/api")
+@RequiredArgsConstructor
 public class UserController {
+
+
     private final UserService userService;
 
-    public UserController(UserService userService){
-        this.userService = userService;
-    }
-
-
-    //CRUD
-    //create
-    @PostMapping("/users")
-    public User createUser(@RequestBody User user){
-        return userService.createUser(user);
-    }
-
-    //read all users
+    /**
+     * Get a list of all users
+     *
+     * @return list of all users
+     */
     @GetMapping("/users")
-    public List<User> getAllUsers(){
-        return userService.getAllUsers();
+    @ResponseStatus(HttpStatus.OK)
+    public List<User> getUsers() {
+        return userService.getUsers();
     }
 
-    //read user by id
-    @GetMapping("/users/{id}")
-    public User getUserById(@PathVariable Long id){
-        return userService.getUserById(id);
-    }
-
-    //update
-    //create update for each field
-
-    //delete
-    @DeleteMapping("/users")
-    public void deleteUser(Long id){
-        userService.deleteUser(id);
+    /**
+     * Save a new user
+     *
+     * @param user the user to be saved
+     */
+    @PostMapping("/users")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void saveUser(@RequestBody User user) {
+        userService.saveUser(user);
     }
 }

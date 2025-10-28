@@ -1,17 +1,13 @@
 package com.ironhack.runclub.service;
 
-import com.fasterxml.jackson.datatype.jsr310.ser.OffsetTimeSerializer;
 import com.ironhack.runclub.exceptions.NoItemWithThisId;
 import com.ironhack.runclub.exceptions.NoUpcomingEvents;
 import com.ironhack.runclub.model.Event;
-import com.ironhack.runclub.respository.EventRepository;
+import com.ironhack.runclub.repository.EventRepository;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
-import java.time.OffsetTime;
-import java.util.Collections;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class EventService {
