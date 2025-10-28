@@ -1,5 +1,5 @@
 <script setup>
-import { ref, onMounted, computed} from 'vue'
+import {ref, onMounted, computed, onUnmounted, watch} from 'vue'
 import axios from 'axios'
 import { useLocationStore } from '@/stores/LocationStore'
 import {useCitiesModalStore} from "@/stores/CitiesModalStore.js";
@@ -12,6 +12,9 @@ const error = ref(null)
 const locationStore = useLocationStore()
 const citiesModalStore = useCitiesModalStore()
 const router = useRouter()
+const selectedFilter = ref(null);
+const filterModal = ref(null)
+const filterModalVisible = ref(false)
 
 //change city
 function openCitiesModal(){
@@ -71,10 +74,52 @@ const groupedEvents = computed(() => {
 function openEvent(id) {
   router.push(`/events/${id}`)
 }
+
+
+function selectFilter(filter) {
+  selectedFilter.value = filter
+  filterModalVisible.value = true;
+  console.log("modal visible: ", filterModalVisible.value)
+}
+
+// close modal when clicking outside
+function handleClickOutside(event) {
+  if (!filterModalVisible.value) return
+  if (!filterModal.value) return
+  if (!filterModal.value.contains(event.target)) {
+    selectedFilter.value = null
+    filterModalVisible.value = false
+  }
+}
+
+onMounted(() => {
+  document.addEventListener('click', handleClickOutside)
+})
+
+onUnmounted(() => {
+  document.removeEventListener('click', handleClickOutside)
+})
 </script>
 
 <template>
   <CitiesModal v-if="citiesModalStore.visible" class="cities-modal"/>
+
+  <div v-if="filterModalVisible" ref="modalBackground" class="modal-background"></div>
+  <div v-if="filterModalVisible" ref="filterModal" class="filter-modal">
+    <div v-if="selectedFilter === 'time'">
+      <p>showing time options</p>
+    </div>
+
+    <div v-if="selectedFilter === 'pace'">
+      <p>Showing pace options</p>
+    </div>
+
+    <div v-if="selectedFilter === 'distance'">
+      <p>showing distance options</p>
+    </div>
+  </div>
+
+
   <div class="container">
     <nav>
       <h1 v-if="locationStore.city">{{ locationStore.city }}
@@ -83,6 +128,19 @@ function openEvent(id) {
       <h1 v-else-if="locationStore.longitude">Events in your area</h1>
       <h1 v-else></h1>
     </nav>
+
+    <p>MODAL VISIBLE {{filterModalVisible}}</p>
+
+    <ul class="filters">
+      <li class="filter" :class="{ selected: selectedFilter === 'all' }" @click.stop="selectFilter('all')">Icon</li>
+      <li class="filter" :class="{ selected: selectedFilter === 'time' }" @click.stop="selectFilter('time')">Start Time</li>
+      <li class="filter" :class="{ selected: selectedFilter === 'pace' }" @click.stop="selectFilter('pace')">Pace</li>
+      <li class="filter" :class="{ selected: selectedFilter === 'distance' }" @click.stop="selectFilter('distance')">Distance</li>
+    </ul>
+
+    <div id="all-filters-modal">
+      <p>showing all filtering options</p>
+    </div>
 
     <div class="ul-container">
       <div v-if="loading">Loading events...</div>
@@ -93,7 +151,7 @@ function openEvent(id) {
           <h2 class="date-header">{{ date }}</h2>
           <div v-if="dayEvents.length === 0">No events scheduled</div>
           <ul v-else>
-            <li v-for="event in dayEvents" :key="event.id" @click="openEvent(event.id)">
+            <li class="event" v-for="event in dayEvents" :key="event.id" @click="openEvent(event.id)">
               <div class="hour-club-pace">
                 <div class="hour-club">
                   <p>{{ formatTime(event.dateTime) }}</p>
@@ -121,7 +179,7 @@ function openEvent(id) {
 
   display: flex;
   flex-direction: column;
-  gap: 2rem
+  gap: 2rem;
 }
 
 .cities-modal{
@@ -137,9 +195,53 @@ h1{
   display: flex;
   align-items: center;
   gap: 0.5rem;
-
   font-weight: 800;
+}
 
+.filters{
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
+
+.filter{
+  background-color: #FB5624;
+  opacity: 0.6;
+
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+}
+
+.filter.selected{
+  opacity: 1;
+}
+
+.filter-modal{
+  position: fixed;
+  top: 70vh;
+  left: 0;
+
+  height: 30vh;
+  width: 100vw;
+
+  color: white;
+  background-color: #181818;
+  z-index: 1001;
+
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.modal-background{
+  position: fixed;
+  left: 0;
+  bottom: 0;
+  height: 100vh;
+  width: 100vw;
+  background-color: black;
+  opacity: 0.8;
+  z-index: 1000;
 }
 
 .ul-container {
@@ -183,7 +285,7 @@ ul{
 
 }
 
-li{
+.event{
   display: flex;
   flex-direction: column;
   justify-content: space-between;

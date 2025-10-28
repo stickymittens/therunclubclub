@@ -6,12 +6,16 @@
   function openProfile(){
     router.push('/profile')
   }
+
+  function opeFilteredEvents(){
+    router.push('/filtered-events')
+  }
 </script>
 
 <template>
   <div class="container">
     <ul>
-      <li>EVENTS</li>
+      <li @click="opeFilteredEvents">EVENTS</li>
       <li @click="openProfile">PROFILE</li>
     </ul>
 

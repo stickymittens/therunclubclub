@@ -4,6 +4,7 @@
   import {ref, watch} from "vue";
   import {useLocationStore} from "@/stores/LocationStore.js";
   import {useCitiesModalStore} from "@/stores/CitiesModalStore.js";
+  import CitiesModal from "@/components/CitiesModal.vue";
 
   const locationStore = useLocationStore()
   const citiesModalStore = useCitiesModalStore()
@@ -37,7 +38,9 @@
 </script>
 
 <template>
+  <CitiesModal v-if="citiesModalStore.visible" class="cities-modal"/>
   <div class="container">
+
     <div v-if="showLocationModal || citiesModalStore.visible" ref="modalBackground" class="modal-background"></div>
     <LocationModal v-if="showLocationModal" ref="locationModal" class="location-modal"/>
 

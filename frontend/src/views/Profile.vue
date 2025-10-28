@@ -17,11 +17,18 @@ import EventsVertical from "@/components/EventsVertical.vue";
 
     <ul>
       <li :class="{ active: activeTab === 'joined' }" @click="selectTab('joined')">Joined Events</li>
+
       <li :class="{ active: activeTab === 'hosted' }" @click="selectTab('hosted')">Hosted Clubs&Events</li>
+
       <li :class="{ active: activeTab === 'myData' }" @click="selectTab('myData')">My Data</li>
     </ul>
 
     <div class="profile-body">
+      <div v-if="activeTab === 'hosted'">
+        <div>+ Add a Club or Event</div>
+        <div>Hosted Clubs</div>
+        <div>Hosted Events</div>
+      </div>
     </div>
 
 <!--    <AddEvent></AddEvent>-->
