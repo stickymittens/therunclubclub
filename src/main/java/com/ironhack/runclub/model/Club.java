@@ -19,8 +19,16 @@ public class Club {
     private int totalDistance;
     private double clubScore;
 
+    @ManyToOne
+    @JoinColumn(name = "club_owner_id")
+    private User clubOwner;
+
 
     //getters and setters
+    public Long getId() {
+        return id;
+    }
+
     public String getClubName() {
         return clubName;
     }

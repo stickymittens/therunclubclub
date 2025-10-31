@@ -1,8 +1,6 @@
 <script setup>
 import {ref} from "vue";
-import AddEvent from "@/components/AddEvent.vue";
-import AddClub from "@/components/AddClub.vue";
-import EventsVertical from "@/components/EventsVertical.vue";
+import LogOutComponent from "@/components/LogOutComponent.vue";
 
   const activeTab = ref('joined');
 
@@ -13,7 +11,10 @@ import EventsVertical from "@/components/EventsVertical.vue";
 
 <template>
   <div class="container">
-    <h1>Profile</h1>
+    <div class="header-container">
+      <h1>Profile</h1>
+      <LogOutComponent/>
+    </div>
 
     <ul>
       <li :class="{ active: activeTab === 'joined' }" @click="selectTab('joined')">Joined Events</li>
@@ -40,6 +41,11 @@ import EventsVertical from "@/components/EventsVertical.vue";
   .container{
     color: white;
     background-color: #000000;
+  }
+
+  .header-container{
+    display: flex;
+    align-items: center;
   }
 
   h1{

@@ -4,6 +4,7 @@ import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
 import java.time.OffsetDateTime;
+import java.util.List;
 
 @Entity
 public class Event {
@@ -28,6 +29,18 @@ public class Event {
     @ManyToOne
     @JoinColumn(name = "club_id")
     private Club club;
+
+    @ManyToOne
+    @JoinColumn(name = "event_owner_id")
+    private User eventOwner;
+
+    @ManyToMany
+    @JoinTable(
+            name = "event_user",
+            joinColumns = @JoinColumn(name = "event_id"),
+            inverseJoinColumns = @JoinColumn(name = "user_username")
+    )
+    private List<User> signedUpUsers;
 
 
     //getters and setters
@@ -75,6 +88,29 @@ public class Event {
         this.eventDescription = eventDescription;
     }
 
+    public Club getClub() {
+        return club;
+    }
+
+    public void setClub(Club club) {
+        this.club = club;
+    }
+
+    public User getEventOwner() {
+        return eventOwner;
+    }
+
+    public void setEventOwner(User eventOwner) {
+        this.eventOwner = eventOwner;
+    }
+
+    public List<User> getSignedUpUsers() {
+        return signedUpUsers;
+    }
+
+    public void setSignedUpUsers(List<User> signedUpUsers) {
+        this.signedUpUsers = signedUpUsers;
+    }
 
     //constructors
     public Event(OffsetDateTime dateTime, String meetingPoint, double distance, double pace, String eventDescription, Club club) {

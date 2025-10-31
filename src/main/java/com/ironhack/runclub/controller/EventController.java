@@ -1,8 +1,13 @@
 package com.ironhack.runclub.controller;
 
+import com.ironhack.runclub.exceptions.NoItemWithThisId;
 import com.ironhack.runclub.exceptions.NoUpcomingEvents;
 import com.ironhack.runclub.model.Event;
+import com.ironhack.runclub.model.User;
 import com.ironhack.runclub.service.EventService;
+import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.OffsetDateTime;
@@ -50,5 +55,16 @@ public class EventController {
     @GetMapping("/events/upcoming")
     public List<Event> findUpcomingEvents(){
         return eventService.findUpcomingEvents();
+    }
+
+
+    //sign up for an event
+    @PostMapping("events/{id}/signup")
+    public ResponseEntity<String> signUpForEvent(
+            @PathVariable Long id,
+            Authentication auth
+    ) {
+        eventService.signUpForEvent(auth, id);
+        return ResponseEntity.ok("Successfully signed up for the event!");
     }
 }

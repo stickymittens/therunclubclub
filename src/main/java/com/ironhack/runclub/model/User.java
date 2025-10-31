@@ -14,11 +14,11 @@ import static jakarta.persistence.FetchType.EAGER;
  * Entity class for representing a User in the database
  */
 @Entity
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
 public class User {
-
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;

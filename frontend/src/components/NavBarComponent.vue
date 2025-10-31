@@ -1,5 +1,8 @@
-<script setup lang="ts">
+<script setup>
   import {useRouter} from "vue-router";
+  import {computed, ref, watchEffect} from "vue";
+  import {token} from "@/auth.js";
+  import {jwtDecode} from "jwt-decode";
 
   const router = useRouter();
 
@@ -10,13 +13,39 @@
   function opeFilteredEvents(){
     router.push('/events')
   }
+
+  //go to log in
+  function goToLogIn(){
+    router.push("/login")
+  }
+
+  const username = computed(() => {
+    if (token.value) {
+      try {
+        const decoded = jwtDecode(token.value);
+        return decoded.sub || null;
+      } catch (err) {
+        console.error("Invalid token", err);
+        return null;
+      }
+    }
+    return null;
+  });
+
 </script>
 
 <template>
   <div class="container">
     <ul>
       <li @click="opeFilteredEvents">EVENTS</li>
-      <li @click="openProfile">PROFILE</li>
+      <li>
+        <p v-if="token" @click="openProfile">
+          PROFILE
+        </p>
+        <p v-else @click="goToLogIn">
+          LOG IN
+        </p>
+      </li>
     </ul>
 
     <img id="glass"

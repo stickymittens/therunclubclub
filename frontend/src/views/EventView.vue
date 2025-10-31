@@ -2,9 +2,12 @@
   import { ref, onMounted, computed} from 'vue'
   import axios from 'axios'
   import { useRoute } from 'vue-router'
+  import { jwtDecode } from "jwt-decode";
+  import {token} from "@/auth.js";
 
   const route = useRoute()
   const event = ref(null)
+  const joinRun = ref(null)
 
   const loading = ref(true)
   const error = ref(null)
@@ -24,9 +27,11 @@
     return `${minutes}:${seconds.toString().padStart(2, '0')}`
   }
 
+
+  //fetching event by id
   async function fetchEvent(id) {
     try {
-      const res = await axios.get(`http://192.168.1.128:8080/events/${id}`)
+      const res = await axios.get(`http://172.20.10.7:8080/events/${id}`)
       event.value = res.data
     } catch (err) {
       console.error('Error fetching event:', err)
@@ -39,6 +44,11 @@
     const id = route.params.id
     if (id) fetchEvent(id)
   })
+
+
+  //sign up for event if user logged in
+
+
 </script>
 
 <template>
@@ -53,6 +63,8 @@
         <p >{{ event.distance }} km - {{ formatPace(event.pace) }} min/km</p>
       </div>
     </div>
+
+    <button v-if="username" ref="joinRun" @click="joinEvent(event.id)">Join the run</button>
   </div>
 </template>
 

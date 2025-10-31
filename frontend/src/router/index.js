@@ -3,6 +3,7 @@ import AddClubEvent from '../views/AddClubEvent.vue'
 import EventView from "@/views/EventView.vue";
 import Events from "@/views/Events.vue";
 import Profile from "@/views/Profile.vue";
+import LogIn from "@/views/LogIn.vue";
 
 const routes = [
     {
@@ -24,6 +25,11 @@ const routes = [
         path: '/events/:id',
         name: 'EventView',
         component: EventView
+    },
+    {
+        path: '/login',
+        name: 'LogIn',
+        component: LogIn
     },
     // Later you can add more routes like profile, home, etc.
 ]
