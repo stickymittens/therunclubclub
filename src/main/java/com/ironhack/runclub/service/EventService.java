@@ -16,11 +16,11 @@ import java.util.List;
 @Service
 public class EventService {
     private final EventRepository eventRepository;
-    private final UserRepository userRepository;
+    private final UserService userService;
 
-    public EventService(EventRepository eventRepository, UserRepository userRepository){
+    public EventService(EventRepository eventRepository, UserService userService){
         this.eventRepository = eventRepository;
-        this.userRepository = userRepository;
+        this.userService = userService;
     }
 
     //CRUD
@@ -59,29 +59,41 @@ public class EventService {
     }
 
 
-    //sign up for an event
-    public void signUpForEvent(Authentication auth, Long eventId){
-        User userToSignUp = (User) auth.getPrincipal();
-
-        Event event = eventRepository
+    //get signed-up users
+    public List<User> getSignedUpUsers(Long eventId){
+        Event event =  eventRepository
                 .findEventById(eventId)
                 .orElseThrow(() -> new NoItemWithThisId("No event with this ID"));
+        return event.getSignedUpUsers();
+    }
+
+    //sign up for an event
+    public void signUpForEvent(Authentication auth, Long eventId) {
+        String username = auth.getName();  // ✅ the username from the JWT
+        User userToSignUp = userService.getUser(username);
+
+        Event event = eventRepository.findEventById(eventId)
+                .orElseThrow(() -> new NoItemWithThisId("No event with this ID"));
+
+        if (event.getSignedUpUsers().contains(userToSignUp)) {
+            throw new IllegalStateException("User already signed up for this event");
+        }
 
         event.getSignedUpUsers().add(userToSignUp);
         eventRepository.save(event);
     }
 
-    //remove yourself from event
-    public void removeYourselfFromEvent(Long eventId){
-        Authentication auth = SecurityContextHolder.getContext().getAuthentication();
-        User userToRemove = (User) auth.getPrincipal();
 
-        Event event = eventRepository
-                .findEventById(eventId)
+    //leave the event
+    public void leaveTheEvent(Authentication auth, Long eventId) {
+        String username = auth.getName();
+        User userToRemove = userService.getUser(username);
+
+        Event event = eventRepository.findEventById(eventId)
                 .orElseThrow(() -> new NoItemWithThisId("No event with this ID"));
 
         if (!event.getSignedUpUsers().contains(userToRemove)) {
-            throw new NoItemWithThisId("User not signed up for this event");
+            throw new IllegalStateException("User already signed up for this event");
         }
 
         event.getSignedUpUsers().remove(userToRemove);

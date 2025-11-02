@@ -1,5 +1,5 @@
 <script setup>
-  import { ref, onMounted, computed} from 'vue'
+import {ref, onMounted, computed, watch} from 'vue'
   import axios from 'axios'
   import { useRoute } from 'vue-router'
   import { jwtDecode } from "jwt-decode";
@@ -11,6 +11,9 @@
 
   const loading = ref(true)
   const error = ref(null)
+
+  const username = ref(null);
+  const message = ref("");
 
   // format time
   function formatTime(dateTime) {
@@ -27,11 +30,10 @@
     return `${minutes}:${seconds.toString().padStart(2, '0')}`
   }
 
-
   //fetching event by id
   async function fetchEvent(id) {
     try {
-      const res = await axios.get(`http://172.20.10.7:8080/events/${id}`)
+      const res = await axios.get(`http://192.168.1.128:8080/events/${id}`)
       event.value = res.data
     } catch (err) {
       console.error('Error fetching event:', err)
@@ -46,26 +48,175 @@
   })
 
 
-  //sign up for event if user logged in
+  //get username if user logged in
+  function decodeToken() {
+    if (token.value) {
+      try {
+        const decoded = jwtDecode(token.value);
+        username.value = decoded.sub  || null;
+      } catch (err) {
+        console.error("Invalid token", err);
+        username.value = null;
+      }
+    } else {
+      username.value = null;
+    }
+  }
+
+    // Decode token when the component mounts
+    onMounted(() => {
+      decodeToken();
+    });
+
+    // Watch the reactive token from auth.js to update username
+    watch(token, () => {
+      decodeToken();
+    });
+
+  //   //BIG FUNCTION TO JOIN lets gooo
+  const checkIfUserSignedUp = () => {
+
+    if(event.value){
+      if(event.value.signedUpUsers.length > 0){
+        const signedUpUsers = event.value.signedUpUsers;
+        let userSignedUp = false;
+
+        for (let i = 0; i < signedUpUsers.length; i++) {
+          if (username.value === signedUpUsers[i].username) {
+            userSignedUp = true;
+            break;
+          }
+        }
+        return userSignedUp;
+      }
+    }
+  };
+
+  onMounted(() => {
+    checkIfUserSignedUp();
+  });
+
+  const joinEvent = async (id) => {
+    try {
+      if(token.value){
+        await axios.post(
+            `http://localhost:8080/events/${id}/sign-up`,
+            null,
+            {
+              headers: {
+                Authorization: `Bearer ${token.value}`,
+              },
+            })
+        message.value = `Added successfully!`;
+        console.log("")
+      }
+
+    } catch (error) {
+      console.error(error);
+      message.value = "Error signing up";
+    }
+  };
+
+const leaveEvent = async (id) => {
+  try {
+    if(token.value){
+      await axios.delete(
+          `http://localhost:8080/events/${id}/leave`,
+          {
+            headers: {
+              Authorization: `Bearer ${token.value}`,
+            },
+          })
+      message.value = `Left successfully!`;
+      console.log("")
+    }
+
+  } catch (error) {
+    console.error(error);
+    message.value = "Error leaving";
+  }
+};
+
+
+    //check if user is on the SignUpList already -function
+    //get event id from the path - last /
+    //if user not logged in - offer to sign up text that will later link to sign up view
+    // if user logged in and sigend up - display signed Up
+    //attach this function to     <button v-if="username" ref="joinRun" @click="joinEvent(event.id)">Join the run</button>
+
+
+    //sign user up for event
+    //if teh above is ok - user logged in and not already on the signed up event list
+    //add user to this event by clicking this button - update backend
 
 
 </script>
 
 <template>
   <div class="container">
-    <div>
+    <div v-if="event">
       <div v-if="loading">Loading event...</div>
       <div v-else-if="error" class="error">{{ error }}</div>
 
       <div v-else>
-        <p>{{ formatTime(event.dateTime) }}</p>
-        <p>{{event.pace}}</p>
-        <p >{{ event.distance }} km - {{ formatPace(event.pace) }} min/km</p>
+        <h1 class="header-container">
+          {{event.club.clubName}}
+        </h1>
+
+        <div class="body-container">
+          <p>{{ formatTime(event.dateTime) }}</p>
+          <p>-</p>
+          <p>{{ event.distance }}km</p>
+          <p>-</p>
+          <p >{{ formatPace(event.pace) }}min/km</p>
+        </div>
       </div>
     </div>
 
-    <button v-if="username" ref="joinRun" @click="joinEvent(event.id)">Join the run</button>
+    <div v-if="username">
+      <button v-if="checkIfUserSignedUp()" @click="leaveEvent(event.id)">Leave the run</button>
+      <button v-else ref="joinRun" @click="joinEvent(event.id)">Join the run</button>
+    </div>
+
+    <p>{{message}}</p>
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.container{
+  position: relative;
+
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+  padding: 0 1rem;
+}
+
+h1{
+  height: 2rem;
+  display: flex;
+  align-items: center;
+  font-weight: 800;
+
+  background-color: pink;
+}
+
+
+.header-container{
+  display: flex;
+  align-items: center;
+
+  height: 6rem;
+}
+
+.body-container{
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  height: 6rem;
+
+  font-size: 20px;
+}
+
+</style>

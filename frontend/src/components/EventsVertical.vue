@@ -41,7 +41,7 @@ function formatPace(pace) {
 onMounted(async () => {
   try {
     // fetch from your Spring Boot backend
-    const res = await axios.get('http://172.20.10.7:8080/events/upcoming')
+    const res = await axios.get('http://192.168.1.128:8080/events/upcoming')
     events.value = res.data
   } catch (err) {
     console.error(err)
@@ -161,7 +161,7 @@ watch(
               <div class="hour-club-pace">
                 <div class="hour-club">
                   <p>{{ formatTime(event.dateTime) }}</p>
-                  <p class="club">CLUBS NAME</p>
+                  <p class="club">{{ event.club.clubName }}</p>
                 </div>
                 <p class="small-text">{{ event.distance }} km - {{ formatPace(event.pace) }} min/km</p>
               </div>
@@ -186,6 +186,8 @@ watch(
   display: flex;
   flex-direction: column;
   gap: 2rem;
+
+  margin: 0;
 }
 
 .cities-modal{
@@ -197,11 +199,13 @@ watch(
 }
 
 h1{
-  height: 2rem;
+  height: 6rem;
   display: flex;
   align-items: center;
   gap: 0.5rem;
   font-weight: 800;
+
+  background-color: pink;
 }
 
 .filters{

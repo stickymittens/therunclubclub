@@ -18,8 +18,7 @@ import org.springframework.security.web.authentication.UsernamePasswordAuthentic
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
-import static org.springframework.http.HttpMethod.GET;
-import static org.springframework.http.HttpMethod.POST;
+import static org.springframework.http.HttpMethod.*;
 import static org.springframework.security.config.http.SessionCreationPolicy.STATELESS;
 
 /**
@@ -95,7 +94,10 @@ public class SecurityConfig {
                         .requestMatchers(POST, "/api/roles").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(POST, "/api/roles/add-to-user").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers("/events/upcoming").permitAll()
+                        .requestMatchers(POST, "/events/*/sign-up").hasAnyAuthority("ROLE_USER")
+                        .requestMatchers(DELETE, "/events/*/leave").hasAnyAuthority("ROLE_USER")
                         .requestMatchers("/events/**").permitAll()
+                        .requestMatchers("/cities").permitAll()
                         .requestMatchers("/api/login").permitAll()
                         .anyRequest().authenticated()); // any other endpoints require authentication
 

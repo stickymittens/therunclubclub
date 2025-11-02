@@ -57,14 +57,28 @@ public class EventController {
         return eventService.findUpcomingEvents();
     }
 
+    //get signed-up users
+    @GetMapping("/events/{id}/signed-up")
+    public List<User> getSignedUpUsers(@PathVariable Long id){
+        return eventService.getSignedUpUsers(id);
+    }
+
 
     //sign up for an event
-    @PostMapping("events/{id}/signup")
+    @PostMapping("events/{id}/sign-up")
     public ResponseEntity<String> signUpForEvent(
             @PathVariable Long id,
             Authentication auth
     ) {
         eventService.signUpForEvent(auth, id);
         return ResponseEntity.ok("Successfully signed up for the event!");
+    }
+
+    @DeleteMapping("events/{id}/leave")
+    public void leaveTheEvent(
+            @PathVariable Long id,
+            Authentication auth
+    ) {
+        eventService.leaveTheEvent(auth, id);
     }
 }

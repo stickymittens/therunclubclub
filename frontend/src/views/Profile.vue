@@ -12,7 +12,7 @@ import LogOutComponent from "@/components/LogOutComponent.vue";
 <template>
   <div class="container">
     <div class="header-container">
-      <h1>Profile</h1>
+      <h1>PROFILE</h1>
       <LogOutComponent/>
     </div>
 

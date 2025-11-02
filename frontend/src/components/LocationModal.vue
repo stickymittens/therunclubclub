@@ -54,7 +54,7 @@
   onMounted(async () => {
     // fetch cities from backend
     try {
-      const res = await axios.get('http://172.20.10.7:8080/cities')
+      const res = await axios.get('http://192.168.1.128:8080/cities')
       cities.value = res.data
     } catch (err) {
       console.error('Failed to load cities:', err)

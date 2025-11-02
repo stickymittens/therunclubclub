@@ -14,7 +14,7 @@
       try {
         const decoded = jwtDecode(token.value);
         username.value = decoded.sub  || null;
-      } catch (err) {
+      } catch (err) {x
         console.error("Invalid token", err);
         username.value = null;
       }

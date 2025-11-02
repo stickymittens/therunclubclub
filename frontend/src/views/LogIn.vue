@@ -1,6 +1,6 @@
 <script setup>
 import { ref } from "vue";
-import { setToken } from "@/auth"; // reactive token handled here
+import { setToken } from "@/auth";
 
 const username = ref("");
 const password = ref("");
