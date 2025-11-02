@@ -11,6 +11,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 
 import java.time.OffsetDateTime;
+import java.time.OffsetTime;
 import java.util.List;
 
 @Service
@@ -67,7 +68,6 @@ public class EventService {
         return event.getSignedUpUsers();
     }
 
-    //sign up for an event
     public void signUpForEvent(Authentication auth, Long eventId) {
         String username = auth.getName();  // ✅ the username from the JWT
         User userToSignUp = userService.getUser(username);
@@ -83,8 +83,6 @@ public class EventService {
         eventRepository.save(event);
     }
 
-
-    //leave the event
     public void leaveTheEvent(Authentication auth, Long eventId) {
         String username = auth.getName();
         User userToRemove = userService.getUser(username);
@@ -98,6 +96,25 @@ public class EventService {
 
         event.getSignedUpUsers().remove(userToRemove);
         eventRepository.save(event);
+    }
+
+    //FILTERS
+//    public List<Event> filterByStartTime(OffsetTime min, OffsetTime max){
+//        return eventRepository
+//                .findEventsByDateTimeBetween(min, max)
+//                .orElseThrow(() -> new NoItemWithThisId("No events for the chosen pace"));
+//    }
+
+    public List<Event> filterByPace(double min, double max){
+        return eventRepository
+                .findEventsByPaceBetween(min, max)
+                .orElseThrow(() -> new NoItemWithThisId("No events for the chosen pace"));
+    }
+
+    public List<Event> filterByDistance(double min, double max){
+        return eventRepository
+                .findEventsByDistanceBetween(min, max)
+                .orElseThrow(() -> new NoItemWithThisId("No events for the chosen distance"));
     }
 }
 

@@ -81,4 +81,16 @@ public class EventController {
     ) {
         eventService.leaveTheEvent(auth, id);
     }
+
+
+    //FILTERS
+    @GetMapping("/events/upcoming/filtered-by-pace")
+    public List<Event> filteredByPace(@RequestParam double min, @RequestParam double max){
+        return eventService.filterByPace(min, max);
+    }
+
+    @GetMapping("/events/upcoming/filtered-by-distance")
+    public List<Event> filteredByDistance(@RequestParam double min, @RequestParam double max){
+        return eventService.filterByDistance(min, max);
+    }
 }

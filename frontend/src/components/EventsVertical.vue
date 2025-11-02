@@ -5,16 +5,27 @@ import { useLocationStore } from '@/stores/LocationStore'
 import {useCitiesModalStore} from "@/stores/CitiesModalStore.js";
 import CitiesModal from "@/components/CitiesModal.vue";
 import {useRouter} from "vue-router";
+import FilterInput from './FilterInput.vue'
 
 const events = ref([])
 const loading = ref(true)
 const error = ref(null)
+
 const locationStore = useLocationStore()
 const citiesModalStore = useCitiesModalStore()
+
 const router = useRouter()
+
 const selectedFilter = ref(null);
 const filterModal = ref(null)
 const filterModalVisible = ref(false)
+
+//FILTERS
+const minPace = ref(null)
+const maxPace = ref(null)
+const minDistance = ref(null)
+const maxDistance = ref(null)
+
 
 //change city
 function openCitiesModal(){
@@ -38,17 +49,67 @@ function formatPace(pace) {
 
 
 //loading upcoming events (10 days from now)
-onMounted(async () => {
+const loadEvents = async () => {
+  loading.value = true
+  error.value = null
+
   try {
-    // fetch from your Spring Boot backend
-    const res = await axios.get('http://192.168.1.128:8080/events/upcoming')
-    events.value = res.data
+    const baseUrl = 'http://192.168.1.128:8080/events/upcoming'
+    const distanceActive = minDistance.value !== null && maxDistance.value !== null
+    const paceActive = minPace.value !== null && maxPace.value !== null
+
+    let eventsData = []
+
+    // 🧩 CASE 1: both filters active → intersect results
+    if (distanceActive && paceActive) {
+      const [distanceRes, paceRes] = await Promise.all([
+        axios.get(`${baseUrl}/filtered-by-distance?min=${minDistance.value}&max=${maxDistance.value}`),
+        axios.get(`${baseUrl}/filtered-by-pace?min=${minPace.value}&max=${maxPace.value}`)
+      ])
+      const paceIds = new Set(paceRes.data.map(e => e.id))
+      eventsData = distanceRes.data.filter(e => paceIds.has(e.id))
+    }
+    // 🧩 CASE 2: only distance
+    else if (distanceActive) {
+      const res = await axios.get(`${baseUrl}/filtered-by-distance?min=${minDistance.value}&max=${maxDistance.value}`)
+      eventsData = res.data
+    }
+    // 🧩 CASE 3: only pace
+    else if (paceActive) {
+      const res = await axios.get(`${baseUrl}/filtered-by-pace?min=${minPace.value}&max=${maxPace.value}`)
+      eventsData = res.data
+    }
+    // 🧩 CASE 4: no filters
+    else {
+      const res = await axios.get(baseUrl)
+      eventsData = res.data
+    }
+
+    events.value = eventsData
+
+    // Initialize ranges when loading unfiltered data
+    if (!distanceActive && !paceActive && eventsData.length > 0) {
+      const distances = eventsData.map(e => e.distance)
+      minDistance.value = Math.floor(Math.min(...distances))
+      maxDistance.value = Math.ceil(Math.max(...distances))
+
+      const paces = eventsData.map(e => e.pace)
+      minPace.value = Math.floor(Math.min(...paces) * 100) / 100
+      maxPace.value = Math.ceil(Math.max(...paces) * 100) / 100
+    }
+
   } catch (err) {
     console.error(err)
     error.value = 'Failed to load events'
   } finally {
     loading.value = false
   }
+}
+
+
+
+onMounted(() => {
+  loadEvents()
 })
 
 //divide days by dates
@@ -79,7 +140,7 @@ function openEvent(id) {
 function selectFilter(filter) {
   selectedFilter.value = filter
   filterModalVisible.value = true;
-  console.log("modal visible: ", filterModalVisible.value)
+  // console.log("modal visible: ", filterModalVisible.value)
 }
 
 // close modal when clicking outside
@@ -106,6 +167,34 @@ watch(
         document.body.style.overflow = isVisible ? 'hidden' : 'auto'
     }
 )
+
+//FILTERS
+function updateDistance(vals) {
+  minDistance.value = vals.min
+  maxDistance.value = vals.max
+  loadEvents()
+}
+
+function updatePace(vals) {
+  minPace.value = vals.min
+  maxPace.value = vals.max
+  loadEvents()
+}
+
+// function resetFilters() {
+//   // Reset distances
+//   if (events.value.length > 0) {
+//     const distances = events.value.map(e => e.distance)
+//     minDistance.value = Math.floor(Math.min(...distances))
+//     maxDistance.value = Math.ceil(Math.max(...distances))
+//
+//     const paces = events.value.map(e => e.pace)
+//     minPace.value = Math.floor(Math.min(...paces) * 100) / 100
+//     maxPace.value = Math.ceil(Math.max(...paces) * 100) / 100
+//   }
+//
+//   loadEvents() // reload events with full ranges
+// }
 </script>
 
 <template>
@@ -114,20 +203,36 @@ watch(
   <div v-if="filterModalVisible" ref="modalBackground" class="modal-background"></div>
   <div v-if="filterModalVisible" ref="filterModal">
 
-    <div v-if="selectedFilter === 'all'" class="all-options-modal">
-      <p>showing all options</p>
-    </div>
+<!--    <div v-if="selectedFilter === 'all'" class="all-options-modal">-->
+<!--      <p>showing all options</p>-->
+<!--    </div>-->
 
-    <div v-if="selectedFilter === 'time'" class="filter-modal">
-      <p>showing time options</p>
-    </div>
+<!--    <div v-if="selectedFilter === 'time'" class="filter-modal">-->
+<!--      <p>showing time options</p>-->
+<!--    </div>-->
 
     <div v-if="selectedFilter === 'pace'" class="filter-modal">
-      <p>Showing pace options</p>
+      <p>Currently available paces:</p>
+      <FilterInput
+          label="Pace (min/km)"
+          :min="minPace"
+          :max="maxPace"
+          :step="0.01"
+          :decimalPlaces="2"
+          @updateFilters="updatePace"
+      />
+      <button @click="resetFilters()">Reset filters</button>
     </div>
 
     <div v-if="selectedFilter === 'distance'" class="filter-modal">
-      <p>showing distance options</p>
+      <p>Currently available distances:</p>
+      <FilterInput
+          label="Distance (km)"
+          :min="minDistance"
+          :max="maxDistance"
+          :step="1"
+          @updateFilters="updateDistance"
+      />
     </div>
   </div>
 
@@ -141,12 +246,16 @@ watch(
       <h1 v-else></h1>
     </nav>
 
-    <ul class="filters">
-      <li class="filter" :class="{ selected: selectedFilter === 'all' }" @click.stop="selectFilter('all')">Icon</li>
-      <li class="filter" :class="{ selected: selectedFilter === 'time' }" @click.stop="selectFilter('time')">Start Time</li>
-      <li class="filter" :class="{ selected: selectedFilter === 'pace' }" @click.stop="selectFilter('pace')">Pace</li>
-      <li class="filter" :class="{ selected: selectedFilter === 'distance' }" @click.stop="selectFilter('distance')">Distance</li>
-    </ul>
+    <div class="filters-container">
+      <ul class="filters">
+        <!--      <li class="filter" :class="{ selected: selectedFilter === 'all' }" @click.stop="selectFilter('all')">Icon</li>-->
+        <!--      <li class="filter" :class="{ selected: selectedFilter === 'time' }" @click.stop="selectFilter('time')">Start Time</li>-->
+        <li class="filter" :class="{ selected: selectedFilter === 'pace' }" @click.stop="selectFilter('pace')">Pace</li>
+        <li class="filter" :class="{ selected: selectedFilter === 'distance' }" @click.stop="selectFilter('distance')">Distance</li>
+      </ul>
+
+<!--      <button id="reset-filters-btn" @click="resetFilters()">Reset filters</button>-->
+    </div>
 
     <div class="ul-container">
       <div v-if="loading">Loading events...</div>
@@ -208,9 +317,23 @@ h1{
   background-color: pink;
 }
 
+.filters-container{
+  display: flex;
+  gap: 1rem;
+}
+
+#reset-filters-btn{
+  background-color: inherit;
+  color: #FB5624;
+  font-weight: 200;
+  border: none;
+
+  width: fit-content;
+}
+
 .filters{
   display: flex;
-  justify-content: space-between;
+  gap: 1rem;
   width: 100%;
 }
 
@@ -230,6 +353,7 @@ h1{
   position: fixed;
   top: 70vh;
   left: 0;
+  padding: 1rem 2rem;
 
   height: 30vh;
   width: 100vw;
@@ -239,6 +363,7 @@ h1{
   z-index: 1001;
 
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 }

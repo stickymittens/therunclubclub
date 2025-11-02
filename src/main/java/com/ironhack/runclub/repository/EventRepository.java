@@ -13,4 +13,8 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Optional<Event> findEventById(Long id);
     Optional<List<Event>> findEventsByDateTimeAfterOrderByDateTimeAsc(OffsetDateTime dateTimeAfter);
     Optional<List<Event>> findEventsByDateTimeBetweenOrderByDateTimeAsc(OffsetDateTime start, OffsetDateTime end);
+
+    Optional<List<Event>> findEventsByDateTimeBetween(OffsetDateTime minStartTime, OffsetDateTime maxStartTime);
+    Optional<List<Event>> findEventsByPaceBetween(double minPace, double maxPace);
+    Optional<List<Event>> findEventsByDistanceBetween(double minDistance, double maxDistance);
 }
