@@ -1,10 +1,13 @@
 package com.ironhack.runclub.service.impl;
 
+import com.ironhack.runclub.model.Event;
 import com.ironhack.runclub.model.User;
 import com.ironhack.runclub.repository.UserRepository;
 import com.ironhack.runclub.service.UserService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -92,5 +95,12 @@ public class UserServiceImpl implements UserService, UserDetailsService {
     public List<User> getUsers() {
         log.info("Fetching all users");
         return userRepository.findAll();
+    }
+
+    @Override
+    public List<Event> getEventsForLoggedInUser(Authentication auth) {
+        String username = auth.getName();
+        User user = userRepository.findByUsername(username);
+        return user.getSignedUpEvents();
     }
 }

@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
 
 import static jakarta.persistence.FetchType.EAGER;
 
@@ -37,6 +38,17 @@ public class User {
     )
     private Collection<Role> roles = new ArrayList<>();
 
+    @ManyToMany(mappedBy = "signedUpUsers")
+    private List<Event> signedUpEvents;
+
+
+    //getters and setters
+    public List<Event> getSignedUpEvents() {
+        return signedUpEvents;
+    }
+
+
+    //constructors
     public User(String name, String username, String password) {
         this.name = name;
         this.username = username;

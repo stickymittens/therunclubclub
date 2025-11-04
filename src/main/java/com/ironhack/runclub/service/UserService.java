@@ -1,6 +1,8 @@
 package com.ironhack.runclub.service;
 
+import com.ironhack.runclub.model.Event;
 import com.ironhack.runclub.model.User;
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -31,5 +33,8 @@ public interface UserService {
      * @return a List of all User entities.
      */
     List<User> getUsers();
+
+
+    List<Event> getEventsForLoggedInUser(Authentication auth);
 }
 

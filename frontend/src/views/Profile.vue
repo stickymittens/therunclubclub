@@ -1,12 +1,57 @@
 <script setup>
-import {ref} from "vue";
+import {computed, onMounted, ref} from "vue";
 import LogOutComponent from "@/components/LogOutComponent.vue";
+import axios from "axios";
+import {token} from "@/auth.js";
 
   const activeTab = ref('joined');
+  const loading = ref(null)
+  const error = ref(null)
+  const events = ref([])
+  const message = ref(null)
 
   function selectTab(tab) {
     activeTab.value = tab;
   }
+
+// format time
+function formatTime(dateTime) {
+  return new Date(dateTime).toLocaleTimeString([], {
+    hour: '2-digit',
+    minute: '2-digit'
+  })
+}
+
+//format pace
+function formatPace(pace) {
+  const minutes = Math.floor(pace)
+  const seconds = Math.round((pace - minutes) * 60)
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`
+}
+
+const loadJoinedEvents = async () => {
+  loading.value = true
+  error.value = null
+
+  try {
+    const res = await axios.get('http://192.168.1.128:8080/api/joined-events', {
+      headers: {
+        Authorization: `Bearer ${token.value}`
+      }
+    })
+
+    events.value = res.data
+  } catch (err) {
+    console.error(err)
+    error.value = 'Failed to load events'
+  } finally {
+    loading.value = false
+  }
+}
+
+onMounted(() => {
+  loadJoinedEvents()
+})
 </script>
 
 <template>
@@ -23,6 +68,32 @@ import LogOutComponent from "@/components/LogOutComponent.vue";
 
       <li :class="{ active: activeTab === 'myData' }" @click="selectTab('myData')">My Data</li>
     </ul>
+
+    <div class="profile-body">
+      <div v-if="activeTab === 'joined'">
+        <button @click="loadJoinedEvents">🔄 Reload Joined Events</button>
+
+        <div v-if="events.length === 0">
+          <p>You haven't joined any events</p>
+        </div>
+        <div v-else class="ul-container">
+          <div v-if="loading">Loading events...</div>
+          <div v-else-if="error" class="error">{{ error }}</div>
+          <div v-else>
+            <div v-for="(event, index) in events" :key="event.id || index">
+              <p><strong>ID:</strong> {{ event.id }}</p>
+              <p><strong>Meeting Point:</strong> {{ event.meetingPoint }}</p>
+              <p><strong>Date:</strong> {{ event.dateTime }}</p>
+              <p><strong>Distance:</strong> {{ event.distance }} km</p>
+              <p><strong>Pace:</strong> {{ event.pace }} min/km</p>
+              <hr />
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
 
     <div class="profile-body">
       <div v-if="activeTab === 'hosted'">
@@ -68,10 +139,12 @@ import LogOutComponent from "@/components/LogOutComponent.vue";
     margin: 0;
 
     background-color: #000000;
+    color: white;
     padding: 0 1rem;
   }
 
   li{
+    color: white;
     margin: 0;
     padding: 1rem;
   }

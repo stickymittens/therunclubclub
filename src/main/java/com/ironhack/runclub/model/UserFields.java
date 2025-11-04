@@ -9,8 +9,8 @@ public class UserFields extends User{
     private int preferredDistance;
     private OffsetTime preferredStartTime;
 
-    @ManyToMany(mappedBy = "users")
-    private List<Event> signedUpEvents;
+//    @ManyToMany(mappedBy = "users")
+//    private List<Event> signedUpEvents;
 
 
     //getters and setters
@@ -38,22 +38,13 @@ public class UserFields extends User{
         this.preferredStartTime = preferredStartTime;
     }
 
-    public List<Event> getSignedUpEvents() {
-        return signedUpEvents;
-    }
-
-    public void setSignedUpEvents(List<Event> signedUpEvents) {
-        this.signedUpEvents = signedUpEvents;
-    }
-
 
     //constructors
-    public UserFields(String name, String username, String password, double preferredPace, int preferredDistance, OffsetTime preferredStartTime, List<Event> signedUpEvents) {
+    public UserFields(String name, String username, String password, double preferredPace, int preferredDistance, OffsetTime preferredStartTime) {
         super(name, username, password);
         this.preferredPace = preferredPace;
         this.preferredDistance = preferredDistance;
         this.preferredStartTime = preferredStartTime;
-        this.signedUpEvents = signedUpEvents;
     }
 
     public UserFields(){}

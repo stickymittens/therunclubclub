@@ -108,7 +108,6 @@ import {ref, onMounted, computed, watch} from 'vue'
               },
             })
         message.value = `Added successfully!`;
-        console.log("")
       }
 
     } catch (error) {

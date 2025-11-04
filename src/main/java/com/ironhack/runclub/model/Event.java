@@ -1,5 +1,6 @@
 package com.ironhack.runclub.model;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -40,6 +41,7 @@ public class Event {
             joinColumns = @JoinColumn(name = "event_id"),
             inverseJoinColumns = @JoinColumn(name = "user_username")
     )
+    @JsonIgnoreProperties({"signedUpEvents"})
     private List<User> signedUpUsers;
 
 

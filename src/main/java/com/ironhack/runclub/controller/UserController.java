@@ -2,11 +2,14 @@ package com.ironhack.runclub.controller;
 
 
 
+import com.ironhack.runclub.model.Event;
 import com.ironhack.runclub.model.User;
 import com.ironhack.runclub.service.UserService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
+
+import org.springframework.security.core.Authentication;
 
 import java.util.List;
 
@@ -38,5 +41,11 @@ public class UserController {
     @ResponseStatus(HttpStatus.CREATED)
     public void saveUser(@RequestBody User user) {
         userService.saveUser(user);
+    }
+
+    @GetMapping("/joined-events")
+    @ResponseStatus(HttpStatus.OK)
+    public List<Event> getMyEvents(Authentication auth) {
+        return userService.getEventsForLoggedInUser(auth);
     }
 }
