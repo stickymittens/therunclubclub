@@ -2,6 +2,7 @@ package com.ironhack.runclub.controller;
 
 
 
+import com.ironhack.runclub.enums.CitiesEnum;
 import com.ironhack.runclub.model.Event;
 import com.ironhack.runclub.model.User;
 import com.ironhack.runclub.service.UserService;
@@ -47,5 +48,11 @@ public class UserController {
     @ResponseStatus(HttpStatus.OK)
     public List<Event> getMyEvents(Authentication auth) {
         return userService.getEventsForLoggedInUser(auth);
+    }
+
+    @GetMapping("/preferred-city")
+    @ResponseStatus(HttpStatus.OK)
+    public CitiesEnum getPreferredCity(Authentication auth) {
+        return userService.getPreferredCity(auth);
     }
 }

@@ -1,10 +1,16 @@
 <script setup>
 import { ref } from "vue";
-import { setToken } from "@/auth";
+import {setToken, token} from "@/auth";
+import {useLocationStore} from "@/stores/LocationStore.js";
+import axios from "axios";
 
 const username = ref("");
 const password = ref("");
 const message = ref("");
+const locationStore = useLocationStore()
+
+
+
 
 // Login function
 const login = async () => {
@@ -23,8 +29,16 @@ const login = async () => {
 
     // Update reactive token in auth.js
     setToken(data.access_token);
-
     message.value = "Logged in successfully!";
+
+    const res = await axios.get('http://192.168.1.128:8080/api/preferred-city', {
+      headers: {
+        Authorization: `Bearer ${token.value}`
+      }
+    })
+
+    locationStore.city = res.data;
+
   } catch (err) {
     message.value = err.message;
   }

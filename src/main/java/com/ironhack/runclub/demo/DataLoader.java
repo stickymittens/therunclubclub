@@ -34,10 +34,10 @@ public class DataLoader {
                 roleService.save(new Role("ROLE_USER"));
                 roleService.save(new Role("ROLE_ADMIN"));
 
-                userService.saveUser(new User("John Doe", "john", "1234"));
-                userService.saveUser(new User("James Smith", "james", "1234"));
-                userService.saveUser(new User("Jane Carry", "jane", "1234"));
-                userService.saveUser(new User("Chris Anderson", "chris", "1234"));
+                userService.saveUser(new User("John Doe", "john", "1234", CitiesEnum.BARCELONA));
+                userService.saveUser(new User("James Smith", "james", "1234", CitiesEnum.BARCELONA));
+                userService.saveUser(new User("Jane Carry", "jane", "1234", CitiesEnum.SITGES));
+                userService.saveUser(new User("Chris Anderson", "chris", "1234", CitiesEnum.BADALONA));
 
                 roleService.addRoleToUser("john", "ROLE_USER");
                 roleService.addRoleToUser("james", "ROLE_ADMIN");

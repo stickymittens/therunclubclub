@@ -93,6 +93,7 @@ public class SecurityConfig {
                         .requestMatchers(POST, "/api/users").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(POST, "/api/roles").hasAnyAuthority("ROLE_ADMIN")
                         .requestMatchers(POST, "/api/roles/add-to-user").hasAnyAuthority("ROLE_ADMIN")
+                        .requestMatchers(GET, "/api/preferred-city").hasAnyAuthority("ROLE_USER")
                         .requestMatchers("/events/upcoming").permitAll()
                         .requestMatchers(POST, "/events/*/sign-up").hasAnyAuthority("ROLE_USER")
                         .requestMatchers(DELETE, "/events/*/leave").hasAnyAuthority("ROLE_USER")

@@ -1,6 +1,8 @@
 package com.ironhack.runclub.model;
 
+import com.ironhack.runclub.enums.CitiesEnum;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -41,17 +43,30 @@ public class User {
     @ManyToMany(mappedBy = "signedUpUsers")
     private List<Event> signedUpEvents;
 
+    @NotNull
+    @Enumerated(EnumType.STRING)
+    private CitiesEnum preferredCity;
+
 
     //getters and setters
     public List<Event> getSignedUpEvents() {
         return signedUpEvents;
     }
 
+    public CitiesEnum getPreferredCity() {
+        return preferredCity;
+    }
+
+    public void setPreferredCity(CitiesEnum preferredCity) {
+        this.preferredCity = preferredCity;
+    }
+
 
     //constructors
-    public User(String name, String username, String password) {
+    public User(String name, String username, String password, CitiesEnum preferredCity) {
         this.name = name;
         this.username = username;
         this.password = password;
+        this.preferredCity = preferredCity;
     }
 }

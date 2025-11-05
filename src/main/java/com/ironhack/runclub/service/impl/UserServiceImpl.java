@@ -1,5 +1,6 @@
 package com.ironhack.runclub.service.impl;
 
+import com.ironhack.runclub.enums.CitiesEnum;
 import com.ironhack.runclub.model.Event;
 import com.ironhack.runclub.model.User;
 import com.ironhack.runclub.repository.UserRepository;
@@ -102,5 +103,13 @@ public class UserServiceImpl implements UserService, UserDetailsService {
         String username = auth.getName();
         User user = userRepository.findByUsername(username);
         return user.getSignedUpEvents();
+    }
+
+    @Override
+    public CitiesEnum getPreferredCity(Authentication auth){
+        String username = auth.getName();
+
+        User user = userRepository.findByUsername(username);
+        return user.getPreferredCity();
     }
 }
