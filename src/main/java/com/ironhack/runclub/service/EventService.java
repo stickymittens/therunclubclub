@@ -1,5 +1,6 @@
 package com.ironhack.runclub.service;
 
+import com.ironhack.runclub.enums.CitiesEnum;
 import com.ironhack.runclub.exceptions.NoItemWithThisId;
 import com.ironhack.runclub.exceptions.NoUpcomingEvents;
 import com.ironhack.runclub.model.Event;
@@ -105,15 +106,34 @@ public class EventService {
 //                .orElseThrow(() -> new NoItemWithThisId("No events for the chosen pace"));
 //    }
 
-    public List<Event> filterByPace(double min, double max){
+    public List<Event> filterByCity(CitiesEnum city){
         return eventRepository
-                .findEventsByPaceBetween(min, max)
+                .findEventsByCity(city)
+                .orElseThrow(() -> new NoItemWithThisId("No events for the chosen city"));
+    }
+
+//    public List<Event> filterByPace(double min, double max){
+//        return eventRepository
+//                .findEventsByPaceBetween(min, max)
+//                .orElseThrow(() -> new NoItemWithThisId("No events for the chosen pace"));
+//    }
+
+    public List<Event> filterByPace(CitiesEnum city, double min, double max){
+        return eventRepository
+                .findEventsByCityAndPaceBetween(city, min, max)
                 .orElseThrow(() -> new NoItemWithThisId("No events for the chosen pace"));
     }
 
-    public List<Event> filterByDistance(double min, double max){
+
+//    public List<Event> filterByDistance(double min, double max){
+//        return eventRepository
+//                .findEventsByDistanceBetween(min, max)
+//                .orElseThrow(() -> new NoItemWithThisId("No events for the chosen distance"));
+//    }
+
+    public List<Event> filterByDistance(CitiesEnum city, double min, double max){
         return eventRepository
-                .findEventsByDistanceBetween(min, max)
+                .findEventsByCityAndDistanceBetween(city, min, max)
                 .orElseThrow(() -> new NoItemWithThisId("No events for the chosen distance"));
     }
 }

@@ -53,6 +53,7 @@ public class DataLoader {
                 Event event1 = eventRepository.save(new Event(
                         OffsetDateTime.parse("2025-12-06T11:00:00+01:00"),
                         "Nomad Frutas Selectas",
+                        CitiesEnum.BARCELONA,
                         7.0,
                         5.75,
                         null,
@@ -62,6 +63,7 @@ public class DataLoader {
                 Event event2 = eventRepository.save(new Event(
                         OffsetDateTime.parse("2025-12-07T09:30:00+01:00"),
                         "Arc de Triumph",
+                        CitiesEnum.BARCELONA,
                         10.0,
                         5.5,
                         "The spiciest run in Barcelona",
@@ -70,7 +72,8 @@ public class DataLoader {
 
                 Event event3 = eventRepository.save(new Event(
                         OffsetDateTime.parse("2024-12-07T09:30:00+01:00"),
-                        "Old location",
+                        "Federal Cafe",
+                        CitiesEnum.SITGES,
                         10.0,
                         5.0,
                         null,
@@ -80,6 +83,7 @@ public class DataLoader {
                 Event event5 = eventRepository.save(new Event(
                         OffsetDateTime.parse("2025-11-08T11:00:00+01:00"),
                         "Syra Coffee Poblenou",
+                        CitiesEnum.BARCELONA,
                         7.0,
                         5.75,
                         null,
@@ -89,6 +93,7 @@ public class DataLoader {
                 Event event11 = eventRepository.save(new Event(
                         OffsetDateTime.parse("2025-11-09T09:30:00+01:00"),
                         "Arc de Triumph",
+                        CitiesEnum.BARCELONA,
                         12.0,
                         5.5,
                         "The spiciest run in Barcelona",
@@ -97,7 +102,8 @@ public class DataLoader {
 
                 Event event12 = eventRepository.save(new Event(
                         OffsetDateTime.parse("2025-11-15T10:00:00+01:00"),
-                        "Arc de Triumph",
+                        "Feredal Cafe",
+                        CitiesEnum.SITGES,
                         9.0,
                         5.5,
                         "The spiciest run in Barcelona",
@@ -107,6 +113,7 @@ public class DataLoader {
                 Event event6 = eventRepository.save(new Event(
                         OffsetDateTime.parse("2025-11-15T09:30:00+01:00"),
                         "Pecora",
+                        CitiesEnum.BARCELONA,
                         7.0,
                         5.75,
                         null,
@@ -116,6 +123,7 @@ public class DataLoader {
                 Event event7 = eventRepository.save(new Event(
                         OffsetDateTime.parse("2025-11-22T11:30:00+01:00"),
                         "Amateur",
+                        CitiesEnum.BARCELONA,
                         7.0,
                         5.75,
                         null,
@@ -125,6 +133,7 @@ public class DataLoader {
                 Event event8 = eventRepository.save(new Event(
                         OffsetDateTime.parse("2025-11-29T11:30:00+01:00"),
                         "Nomad Passeige Nomad Passeige Nomad",
+                        CitiesEnum.BARCELONA,
                         7.0,
                         5.75,
                         null,

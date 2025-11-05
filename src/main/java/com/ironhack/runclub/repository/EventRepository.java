@@ -1,5 +1,6 @@
 package com.ironhack.runclub.repository;
 
+import com.ironhack.runclub.enums.CitiesEnum;
 import com.ironhack.runclub.model.Event;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
@@ -14,7 +15,11 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Optional<List<Event>> findEventsByDateTimeAfterOrderByDateTimeAsc(OffsetDateTime dateTimeAfter);
     Optional<List<Event>> findEventsByDateTimeBetweenOrderByDateTimeAsc(OffsetDateTime start, OffsetDateTime end);
 
-    Optional<List<Event>> findEventsByDateTimeBetween(OffsetDateTime minStartTime, OffsetDateTime maxStartTime);
+//    Optional<List<Event>> findEventsByDateTimeBetween(OffsetDateTime minStartTime, OffsetDateTime maxStartTime);
     Optional<List<Event>> findEventsByPaceBetween(double minPace, double maxPace);
     Optional<List<Event>> findEventsByDistanceBetween(double minDistance, double maxDistance);
+
+    Optional<List<Event>> findEventsByCity(CitiesEnum city);
+    Optional<List<Event>> findEventsByCityAndPaceBetween(CitiesEnum city, double minPace, double maxPace);
+    Optional<List<Event>> findEventsByCityAndDistanceBetween(CitiesEnum city, double minDistance, double maxDistance);
 }

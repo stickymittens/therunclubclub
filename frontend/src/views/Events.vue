@@ -38,7 +38,7 @@
 </script>
 
 <template>
-  <CitiesModal v-if="citiesModalStore.visible" class="cities-modal"/>
+<!--  <CitiesModal v-if="citiesModalStore.visible" class="cities-modal"/>-->
   <div class="container">
 
     <div v-if="showLocationModal || citiesModalStore.visible" ref="modalBackground" class="modal-background"></div>

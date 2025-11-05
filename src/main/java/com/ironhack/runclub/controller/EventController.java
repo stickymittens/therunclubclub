@@ -1,5 +1,6 @@
 package com.ironhack.runclub.controller;
 
+import com.ironhack.runclub.enums.CitiesEnum;
 import com.ironhack.runclub.exceptions.NoItemWithThisId;
 import com.ironhack.runclub.exceptions.NoUpcomingEvents;
 import com.ironhack.runclub.model.Event;
@@ -84,13 +85,18 @@ public class EventController {
 
 
     //FILTERS
-    @GetMapping("/events/upcoming/filtered-by-pace")
-    public List<Event> filteredByPace(@RequestParam double min, @RequestParam double max){
-        return eventService.filterByPace(min, max);
+    @GetMapping("/events/upcoming/{city}")
+    public List<Event> filteredByCity(@PathVariable CitiesEnum city){
+        return eventService.filterByCity(city);
     }
 
-    @GetMapping("/events/upcoming/filtered-by-distance")
-    public List<Event> filteredByDistance(@RequestParam double min, @RequestParam double max){
-        return eventService.filterByDistance(min, max);
+    @GetMapping("/events/upcoming/{city}/filtered-by-pace")
+    public List<Event> filteredByPace(@PathVariable CitiesEnum city, @RequestParam double min, @RequestParam double max){
+        return eventService.filterByPace(city, min, max);
+    }
+
+    @GetMapping("/events/upcoming/{city}/filtered-by-distance")
+    public List<Event> filteredByDistance(@PathVariable CitiesEnum city, @RequestParam double min, @RequestParam double max){
+        return eventService.filterByDistance(city, min, max);
     }
 }

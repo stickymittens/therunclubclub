@@ -1,6 +1,7 @@
 package com.ironhack.runclub.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.ironhack.runclub.enums.CitiesEnum;
 import jakarta.persistence.*;
 import jakarta.validation.constraints.NotNull;
 
@@ -18,6 +19,10 @@ public class Event {
 
     @NotNull (message = "Meeting point must be set")
     private String meetingPoint;
+
+    @NotNull (message = "City must be set")
+    @Enumerated(EnumType.STRING)
+    private CitiesEnum city;
 
     @NotNull (message = "Distance must be set")
     private double distance;
@@ -64,6 +69,14 @@ public class Event {
 
     public void setMeetingPoint(String meetingPoint) {
         this.meetingPoint = meetingPoint;
+    }
+
+    public CitiesEnum getCity() {
+        return city;
+    }
+
+    public void setCity(CitiesEnum city) {
+        this.city = city;
     }
 
     public double getDistance() {
@@ -115,9 +128,10 @@ public class Event {
     }
 
     //constructors
-    public Event(OffsetDateTime dateTime, String meetingPoint, double distance, double pace, String eventDescription, Club club) {
+    public Event(OffsetDateTime dateTime, String meetingPoint, CitiesEnum city, double distance, double pace, String eventDescription, Club club) {
         this.dateTime = dateTime;
         this.meetingPoint = meetingPoint;
+        this.city = city;
         this.distance = distance;
         this.pace = pace;
         this.eventDescription = eventDescription;

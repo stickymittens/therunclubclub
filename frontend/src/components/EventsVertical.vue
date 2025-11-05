@@ -54,7 +54,8 @@ const loadEvents = async () => {
   error.value = null
 
   try {
-    const baseUrl = 'http://192.168.1.128:8080/events/upcoming'
+    const baseUrl = `http://192.168.1.128:8080/events/upcoming/${locationStore.city}`
+
     const distanceActive = minDistance.value !== null && maxDistance.value !== null
     const paceActive = minPace.value !== null && maxPace.value !== null
 
@@ -105,8 +106,6 @@ const loadEvents = async () => {
     loading.value = false
   }
 }
-
-
 
 onMounted(() => {
   loadEvents()
@@ -270,7 +269,8 @@ function updatePace(vals) {
               <div class="hour-club-pace">
                 <div class="hour-club">
                   <p>{{ formatTime(event.dateTime) }}</p>
-                  <p class="club">{{ event.club.clubName }}</p>
+<!--                  <p class="club">{{ event.club.clubName }}</p>-->
+                  <p class="club">{{event.city}}</p>
                 </div>
                 <p class="small-text">{{ event.distance }} km - {{ formatPace(event.pace) }} min/km</p>
               </div>
@@ -284,6 +284,7 @@ function updatePace(vals) {
           </ul>
         </div>
       </div>
+
     </div>
   </div>
 </template>
