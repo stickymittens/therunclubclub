@@ -127,7 +127,6 @@ const leaveEvent = async (id) => {
             },
           })
       message.value = `Left successfully!`;
-      console.log("")
     }
 
   } catch (error) {
@@ -135,20 +134,6 @@ const leaveEvent = async (id) => {
     message.value = "Error leaving";
   }
 };
-
-
-    //check if user is on the SignUpList already -function
-    //get event id from the path - last /
-    //if user not logged in - offer to sign up text that will later link to sign up view
-    // if user logged in and sigend up - display signed Up
-    //attach this function to     <button v-if="username" ref="joinRun" @click="joinEvent(event.id)">Join the run</button>
-
-
-    //sign user up for event
-    //if teh above is ok - user logged in and not already on the signed up event list
-    //add user to this event by clicking this button - update backend
-
-
 </script>
 
 <template>

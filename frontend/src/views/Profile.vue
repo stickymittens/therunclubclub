@@ -52,6 +52,29 @@ const loadJoinedEvents = async () => {
 onMounted(() => {
   loadJoinedEvents()
 })
+
+function reloadJoinedEvents(){
+  loadJoinedEvents()
+}
+
+const leaveEvent = async (id) => {
+  try {
+    if(token.value){
+      await axios.delete(
+          `http://localhost:8080/events/${id}/leave`,
+          {
+            headers: {
+              Authorization: `Bearer ${token.value}`,
+            },
+          })
+      message.value = `Left successfully!`;
+    }
+    reloadJoinedEvents()
+  } catch (error) {
+    console.error(error);
+    message.value = "Error leaving";
+  }
+};
 </script>
 
 <template>
@@ -71,8 +94,6 @@ onMounted(() => {
 
     <div class="profile-body">
       <div v-if="activeTab === 'joined'">
-        <button @click="loadJoinedEvents">🔄 Reload Joined Events</button>
-
         <div v-if="events.length === 0">
           <p>You haven't joined any events</p>
         </div>
@@ -86,6 +107,7 @@ onMounted(() => {
               <p><strong>Date:</strong> {{ event.dateTime }}</p>
               <p><strong>Distance:</strong> {{ event.distance }} km</p>
               <p><strong>Pace:</strong> {{ event.pace }} min/km</p>
+              <button @click="leaveEvent(event.id)">X</button>
               <hr />
             </div>
           </div>
