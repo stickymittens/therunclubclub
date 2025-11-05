@@ -14,7 +14,7 @@ const emit = defineEmits(['updateFilters'])
 const minValue = ref(props.min)
 const maxValue = ref(props.max)
 
-const handleInput = () => {
+const handleBlur = () => {
   const minNum = parseFloat(minValue.value)
   const maxNum = parseFloat(maxValue.value)
 
@@ -23,10 +23,10 @@ const handleInput = () => {
     const maxFinal = Math.max(minNum, maxNum)
     const round = (num) => parseFloat(num.toFixed(props.decimalPlaces))
 
-    emit('updateFilters', {
-      min: round(minFinal),
-      max: round(maxFinal)
-    })
+    minValue.value = round(minFinal)
+    maxValue.value = round(maxFinal)
+
+    emit('updateFilters', { min: minValue.value, max: maxValue.value })
   }
 }
 
@@ -44,7 +44,7 @@ watch([() => props.min, () => props.max], ([newMin, newMax]) => {
           type="number"
           :step="step"
           v-model.number="minValue"
-          @input="handleInput"
+          @blur="handleBlur"
           placeholder="Min"
       />
       <span>–</span>
@@ -52,7 +52,7 @@ watch([() => props.min, () => props.max], ([newMin, newMax]) => {
           type="number"
           :step="step"
           v-model.number="maxValue"
-          @input="handleInput"
+          @blur="handleBlur"
           placeholder="Max"
       />
     </div>
