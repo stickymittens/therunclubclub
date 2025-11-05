@@ -17,10 +17,14 @@ const citiesModalStore = useCitiesModalStore()
 const router = useRouter()
 
 const selectedFilter = ref(null);
+const paceFilter = ref(null)
+const distanceFilter = ref(null)
 const filterModal = ref(null)
 const filterModalVisible = ref(false)
 
 //FILTERS
+let paceActive = ref(false)
+let distanceActive = ref(false)
 const minPace = ref(null)
 const maxPace = ref(null)
 const minDistance = ref(null)
@@ -31,6 +35,13 @@ const maxDistance = ref(null)
 function openCitiesModal(){
   citiesModalStore.visible = true;
 }
+
+watch(
+    () => locationStore.city,
+    (city) => {
+      loadEvents()
+    }
+)
 
 // format time
 function formatTime(dateTime) {
@@ -53,58 +64,48 @@ const loadEvents = async () => {
   loading.value = true
   error.value = null
 
-  try {
-    const baseUrl = `http://192.168.1.128:8080/events/upcoming/${locationStore.city}`
+  if (locationStore.city) {
+    try {
+      const res = await axios.get(`http://192.168.1.128:8080/events/upcoming/${locationStore.city}`)
+      events.value = res.data
 
-    const distanceActive = minDistance.value !== null && maxDistance.value !== null
-    const paceActive = minPace.value !== null && maxPace.value !== null
+      let eventsData = []
+      distanceActive = minDistance.value !== null && maxDistance.value !== null
+      paceActive = minPace.value !== null && maxPace.value !== null
 
-    let eventsData = []
+      const baseUrl = `http://192.168.1.128:8080/events/upcoming/${locationStore.city}`
 
-    // 🧩 CASE 1: both filters active → intersect results
-    if (distanceActive && paceActive) {
-      const [distanceRes, paceRes] = await Promise.all([
-        axios.get(`${baseUrl}/filtered-by-distance?min=${minDistance.value}&max=${maxDistance.value}`),
-        axios.get(`${baseUrl}/filtered-by-pace?min=${minPace.value}&max=${maxPace.value}`)
-      ])
-      const paceIds = new Set(paceRes.data.map(e => e.id))
-      eventsData = distanceRes.data.filter(e => paceIds.has(e.id))
+      if (distanceActive && paceActive) {
+        const [distanceRes, paceRes] = await Promise.all([
+          axios.get(`${baseUrl}/filtered-by-distance?min=${minDistance.value}&max=${maxDistance.value}`),
+          axios.get(`${baseUrl}/filtered-by-pace?min=${minPace.value}&max=${maxPace.value}`)
+        ])
+        const paceIds = new Set(paceRes.data.map(e => e.id))
+        eventsData = distanceRes.data.filter(e => paceIds.has(e.id))
+      }
+      else if (distanceActive) {
+        const res = await axios.get(`${baseUrl}/filtered-by-distance?min=${minDistance.value}&max=${maxDistance.value}`)
+        eventsData = res.data
+      }
+      else if (paceActive) {
+        const res = await axios.get(`${baseUrl}/filtered-by-pace?min=${minPace.value}&max=${maxPace.value}`)
+        eventsData = res.data
+      }
+      else {
+        const res = await axios.get(baseUrl)
+        eventsData = res.data
+      }
+
+      events.value = eventsData
+
+    } catch (err) {
+      console.error(err)
+      error.value = 'Failed to load events'
+    } finally {
+      loading.value = false
     }
-    // 🧩 CASE 2: only distance
-    else if (distanceActive) {
-      const res = await axios.get(`${baseUrl}/filtered-by-distance?min=${minDistance.value}&max=${maxDistance.value}`)
-      eventsData = res.data
-    }
-    // 🧩 CASE 3: only pace
-    else if (paceActive) {
-      const res = await axios.get(`${baseUrl}/filtered-by-pace?min=${minPace.value}&max=${maxPace.value}`)
-      eventsData = res.data
-    }
-    // 🧩 CASE 4: no filters
-    else {
-      const res = await axios.get(baseUrl)
-      eventsData = res.data
-    }
-
-    events.value = eventsData
-
-    // Initialize ranges when loading unfiltered data
-    if (!distanceActive && !paceActive && eventsData.length > 0) {
-      const distances = eventsData.map(e => e.distance)
-      minDistance.value = Math.floor(Math.min(...distances))
-      maxDistance.value = Math.ceil(Math.max(...distances))
-
-      const paces = eventsData.map(e => e.pace)
-      minPace.value = Math.floor(Math.min(...paces) * 100) / 100
-      maxPace.value = Math.ceil(Math.max(...paces) * 100) / 100
-    }
-
-  } catch (err) {
-    console.error(err)
-    error.value = 'Failed to load events'
-  } finally {
-    loading.value = false
   }
+
 }
 
 onMounted(() => {
@@ -168,32 +169,46 @@ watch(
 )
 
 //FILTERS
-function updateDistance(vals) {
-  minDistance.value = vals.min
-  maxDistance.value = vals.max
-  loadEvents()
-}
-
 function updatePace(vals) {
-  minPace.value = vals.min
-  maxPace.value = vals.max
+  if(events.value.length>0){
+    minPace.value = vals.min
+    maxPace.value = vals.max
+  }
+  paceFilter.value.style.opacity="1"
   loadEvents()
 }
 
-// function resetFilters() {
-//   // Reset distances
-//   if (events.value.length > 0) {
-//     const distances = events.value.map(e => e.distance)
-//     minDistance.value = Math.floor(Math.min(...distances))
-//     maxDistance.value = Math.ceil(Math.max(...distances))
-//
-//     const paces = events.value.map(e => e.pace)
-//     minPace.value = Math.floor(Math.min(...paces) * 100) / 100
-//     maxPace.value = Math.ceil(Math.max(...paces) * 100) / 100
-//   }
-//
-//   loadEvents() // reload events with full ranges
-// }
+function updateDistance(vals) {
+  if(events.value.length>0){
+    minDistance.value = vals.min
+    maxDistance.value = vals.max
+  }
+  distanceFilter.value.style.opacity="1"
+  loadEvents()
+}
+
+function resetPace(){
+  if(events.value.length>0){
+    minPace.value = null;
+    maxPace.value = null;
+  }
+  paceFilter.value.style.opacity="0.6"
+  loadEvents()
+}
+
+function resetDistance(){
+  if(events.value.length>0){
+    minDistance.value = null;
+    maxDistance.value = null;
+  }
+  distanceFilter.value.style.opacity="0.6"
+  loadEvents()
+}
+
+function resetFilters(){
+  resetPace()
+  resetDistance()
+}
 </script>
 
 <template>
@@ -220,7 +235,7 @@ function updatePace(vals) {
           :decimalPlaces="2"
           @updateFilters="updatePace"
       />
-      <button @click="resetFilters()">Reset filters</button>
+      <button @click="resetPace()">Reset</button>
     </div>
 
     <div v-if="selectedFilter === 'distance'" class="filter-modal">
@@ -229,9 +244,11 @@ function updatePace(vals) {
           label="Distance (km)"
           :min="minDistance"
           :max="maxDistance"
-          :step="1"
+          :step="0.5"
+          :decimalPlaces="1"
           @updateFilters="updateDistance"
       />
+      <button @click="resetDistance()">Reset</button>
     </div>
   </div>
 
@@ -249,11 +266,11 @@ function updatePace(vals) {
       <ul class="filters">
         <!--      <li class="filter" :class="{ selected: selectedFilter === 'all' }" @click.stop="selectFilter('all')">Icon</li>-->
         <!--      <li class="filter" :class="{ selected: selectedFilter === 'time' }" @click.stop="selectFilter('time')">Start Time</li>-->
-        <li class="filter" :class="{ selected: selectedFilter === 'pace' }" @click.stop="selectFilter('pace')">Pace</li>
-        <li class="filter" :class="{ selected: selectedFilter === 'distance' }" @click.stop="selectFilter('distance')">Distance</li>
+        <li ref="paceFilter" class="filter" :class="{ selected: selectedFilter === 'pace' }" @click.stop="selectFilter('pace')">Pace</li>
+        <li ref="distanceFilter" class="filter" :class="{ selected: selectedFilter === 'distance' }" @click.stop="selectFilter('distance')">Distance</li>
       </ul>
 
-<!--      <button id="reset-filters-btn" @click="resetFilters()">Reset filters</button>-->
+      <button id="reset-filters-btn" @click="resetFilters()">Reset filters</button>
     </div>
 
     <div class="ul-container">

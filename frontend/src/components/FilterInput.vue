@@ -3,8 +3,8 @@ import { ref, watch } from 'vue'
 
 const props = defineProps({
   label: { type: String, default: 'Filter' },
-  min: { type: Number, default: 0 },
-  max: { type: Number, default: 100 },
+  min: { type: Number, default: null },
+  max: { type: Number, default: null },
   step: { type: Number, default: 1 },
   decimalPlaces: { type: Number, default: 0 }
 })

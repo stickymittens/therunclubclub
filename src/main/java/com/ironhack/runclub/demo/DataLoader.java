@@ -54,8 +54,8 @@ public class DataLoader {
                         OffsetDateTime.parse("2025-12-06T11:00:00+01:00"),
                         "Nomad Frutas Selectas",
                         CitiesEnum.BARCELONA,
-                        7.0,
-                        5.75,
+                        8.0,
+                        5,
                         null,
                         club1
                 ));
@@ -64,8 +64,8 @@ public class DataLoader {
                         OffsetDateTime.parse("2025-12-07T09:30:00+01:00"),
                         "Arc de Triumph",
                         CitiesEnum.BARCELONA,
-                        10.0,
-                        5.5,
+                        11.0,
+                        5.25,
                         "The spiciest run in Barcelona",
                         club2
                 ));
@@ -75,7 +75,7 @@ public class DataLoader {
                         "Federal Cafe",
                         CitiesEnum.SITGES,
                         10.0,
-                        5.0,
+                        5.17,
                         null,
                         club2
                 ));
@@ -84,7 +84,7 @@ public class DataLoader {
                         OffsetDateTime.parse("2025-11-08T11:00:00+01:00"),
                         "Syra Coffee Poblenou",
                         CitiesEnum.BARCELONA,
-                        7.0,
+                        6.0,
                         5.75,
                         null,
                         club1
@@ -105,7 +105,7 @@ public class DataLoader {
                         "Feredal Cafe",
                         CitiesEnum.SITGES,
                         9.0,
-                        5.5,
+                        5.75,
                         "The spiciest run in Barcelona",
                         club2
                 ));
@@ -114,8 +114,8 @@ public class DataLoader {
                         OffsetDateTime.parse("2025-11-15T09:30:00+01:00"),
                         "Pecora",
                         CitiesEnum.BARCELONA,
-                        7.0,
-                        5.75,
+                        4.0,
+                        6.0,
                         null,
                         club1
                 ));
@@ -124,8 +124,8 @@ public class DataLoader {
                         OffsetDateTime.parse("2025-11-22T11:30:00+01:00"),
                         "Amateur",
                         CitiesEnum.BARCELONA,
-                        7.0,
-                        5.75,
+                        6.5,
+                        5.65,
                         null,
                         club1
                 ));
@@ -134,8 +134,8 @@ public class DataLoader {
                         OffsetDateTime.parse("2025-11-29T11:30:00+01:00"),
                         "Nomad Passeige Nomad Passeige Nomad",
                         CitiesEnum.BARCELONA,
-                        7.0,
-                        5.75,
+                        5.5,
+                        6.15,
                         null,
                         club1
                 ));
