@@ -129,7 +129,6 @@ const leaveEvent = async (id) => {
 <style scoped>
   .container{
     color: white;
-    background-color: #000000;
   }
 
   .message{
@@ -139,6 +138,7 @@ const leaveEvent = async (id) => {
   .header-container{
     display: flex;
     align-items: center;
+    background-color: #000000;
   }
 
   h1{
@@ -148,7 +148,6 @@ const leaveEvent = async (id) => {
   .profile-body{
     background-color: #181818;
     margin: 0;
-    padding: 1rem 0;
   }
 
   .bookmarks{
@@ -211,9 +210,10 @@ const leaveEvent = async (id) => {
 
     border-radius: 12px;
     color: #fff;
+    background: #181818;
   }
 
-  /* AddClub card */
+  /* AddClub card
   .clubs-carousel li:nth-child(2) {
     background: linear-gradient(180deg, rgba(251,86,36,0.15), rgba(251,86,36,0.05));
     color: #FB5624;
@@ -227,4 +227,5 @@ const leaveEvent = async (id) => {
     transform: translateY(-4px);
     box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
   }
+  */
 </style>

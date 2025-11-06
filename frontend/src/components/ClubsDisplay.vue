@@ -113,7 +113,7 @@ function reloadClubs(){
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  padding: 1rem 2rem;
+  padding: 2rem;
 
   flex: 0 0 auto;
   width: 100%;
@@ -124,11 +124,12 @@ function reloadClubs(){
   border: 1px solid rgba(255, 255, 255, 0.05);
   font-weight: 600;
   cursor: pointer;
+
+  transition: box-shadow 0.4s ease;
 }
 
 .carousel-item:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
+  box-shadow: 0 0 12px rgba(251, 86, 36, 0.2);
 }
 
 .carousel-item button{
