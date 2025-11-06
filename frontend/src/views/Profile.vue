@@ -79,10 +79,10 @@ const leaveEvent = async (id) => {
       <LogOutComponent/>
     </div>
 
-    <ul>
-      <li :class="{ active: activeTab === 'joined' }" @click="selectTab('joined')">Joined Events</li>
+    <ul class="bookmarks">
+      <li :class="{ active: activeTab === 'joined' }" @click="selectTab('joined')">Joined</li>
 
-      <li :class="{ active: activeTab === 'hosted' }" @click="selectTab('hosted')">Hosted Clubs&Events</li>
+      <li :class="{ active: activeTab === 'hosted' }" @click="selectTab('hosted')">Hosted</li>
 
       <li :class="{ active: activeTab === 'myData' }" @click="selectTab('myData')">My Data</li>
     </ul>
@@ -90,7 +90,7 @@ const leaveEvent = async (id) => {
     <div class="profile-body">
       <div v-if="activeTab === 'joined'">
         <div v-if="events.length === 0">
-          <p>You haven't joined any events</p>
+          <p class="message">You haven't joined any events</p>
         </div>
         <div v-else class="ul-container">
           <div v-if="loading">Loading events...</div>
@@ -114,8 +114,10 @@ const leaveEvent = async (id) => {
 
     <div class="profile-body">
       <div v-if="activeTab === 'hosted'">
-        <AddClub/>
-        <ClubsDisplay/>
+        <ul class="clubs-carousel">
+          <li><ClubsDisplay/></li>
+          <li><AddClub/></li>
+        </ul>
       </div>
     </div>
 
@@ -130,6 +132,10 @@ const leaveEvent = async (id) => {
     background-color: #000000;
   }
 
+  .message{
+    background: #181818;
+  }
+
   .header-container{
     display: flex;
     align-items: center;
@@ -142,9 +148,10 @@ const leaveEvent = async (id) => {
   .profile-body{
     background-color: #181818;
     margin: 0;
+    padding: 1rem 0;
   }
 
-  ul{
+  .bookmarks{
     list-style-type: none;
 
     font-size: 12px;
@@ -156,16 +163,68 @@ const leaveEvent = async (id) => {
 
     background-color: #000000;
     color: white;
-    padding: 0 1rem;
+    padding: 0 2rem;
   }
 
-  li{
+  .bookmarks li{
     color: white;
     margin: 0;
+    padding: 1rem 2rem;
+    transition: color .12s ease, backgriund .12s ease, transform .08s ease;
+  }
+
+  .bookmarks li.active{
+    background-color: #181818;
+    font-weight: 600;
+  }
+
+  .clubs-carousel::-webkit-scrollbar {
+    display: none;             /* Chrome, Safari, Opera */
+  }
+
+  .clubs-carousel{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    width: 100%;
+
+    overflow-x: auto;
+    scroll-behavior: smooth;
+    list-style: none;
+    background-color: #181818;
+    padding: 1rem 0;
+    margin: 0;
+
+    height: max-content;
+    box-sizing: border-box;
+
+  }
+
+  .clubs-carousel li{
+    flex: 0 0 auto;
+    text-align: center;
+
+    min-width: 100%;
+    height: 100%;
+    padding: 0;
+    margin: 0;
+
+    border-radius: 12px;
+    color: #fff;
+  }
+
+  /* AddClub card */
+  .clubs-carousel li:nth-child(2) {
+    background: linear-gradient(180deg, rgba(251,86,36,0.15), rgba(251,86,36,0.05));
+    color: #FB5624;
+    border: 1px dashed rgba(251, 86, 36, 0.4);
+    font-weight: 600;
+    cursor: pointer;
     padding: 1rem;
   }
 
-  li.active{
-    background-color: #181818;
+  .clubs-carousel li:nth-child(2):hover {
+    transform: translateY(-4px);
+    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
   }
 </style>

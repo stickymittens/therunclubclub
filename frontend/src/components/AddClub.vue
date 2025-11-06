@@ -1,7 +1,6 @@
 <script setup>
   import axios from "axios";
   import { ref } from "vue";
-  import addEvent from "@/components/AddEvent.vue";
   import {token} from "@/auth.js";
 
   const clubName = ref(null);
@@ -45,20 +44,20 @@
 
 <template>
   <div class="container">
-    <h2 >Add New Running CLub</h2>
+    <h2 >Add New Running Club</h2>
 
     <form @submit.prevent="addClub">
-      <div>
+      <div class="label-input">
         <label>Name</label>
         <input v-model="clubName" />
       </div>
 
-      <div>
-        <label>Description</label>
+      <div class="label-input">
+        <label >Description</label>
         <input v-model="clubDescription"/>
       </div>
 
-      <button type="submit">
+      <button type="submit" class="submit-btn">
         Add Club
       </button>
     </form>
@@ -66,3 +65,35 @@
     <p v-if="message">{{ message }}</p>
   </div>
 </template>
+
+<style scoped>
+.container{
+  font-family: 'Inter', sans-serif;
+  display: flex;
+  flex-direction: column;
+  background: none;
+}
+
+.label-input{
+  display: flex;
+  justify-content: space-between;
+}
+
+.submit-btn {
+  margin-top: 0.4rem;
+  background-color: #fb5624;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.submit-btn:hover {
+  background-color: #ff6a3c;
+}
+
+</style>

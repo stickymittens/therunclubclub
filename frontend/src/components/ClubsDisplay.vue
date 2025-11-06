@@ -63,17 +63,20 @@ function reloadClubs(){
 
 <template>
   <div class="container">
-    <div v-if="clubs.length === 0">
+    <div v-if="loading">
+      <p class="message">Loading clubs..</p>
+    </div>
+    <div v-else-if="!loading&&clubs.length === 0">
       <p>You haven't started a club yet</p>
     </div>
     <div v-else class="ul-container">
       <div v-if="loading">Loading events...</div>
       <div v-else-if="error" class="error">{{ error }}</div>
 
-      <div v-else>
-        <div v-for="(club, index) in clubs" :key="club.id || index">
+      <div v-else class="carousel">
+        <div v-for="(club, index) in clubs" :key="club.id || index" class="carousel-item">
           <p>{{club.clubName}}</p>
-          <button @click="deleteClub(club.id)">X</button>
+          <button @click="deleteClub(club.id)">delete club</button>
         </div>
       </div>
 
@@ -81,4 +84,57 @@ function reloadClubs(){
   </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.carousel::-webkit-scrollbar {
+  display: none;             /* Chrome, Safari, Opera */
+}
+
+.message{
+  background: #181818;
+}
+
+.carousel{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  overflow-x: auto;
+  scroll-behavior: smooth;
+  list-style: none;
+
+  width: 100vw;
+  background-color: #181818;
+  padding: 1rem;
+}
+
+.carousel-item{
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 2rem;
+
+  flex: 0 0 auto;
+  width: 100%;
+
+  border-radius: 12px;
+  color: #fff;
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.4));
+  border: 1px solid rgba(255, 255, 255, 0.05);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.carousel-item:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
+}
+
+.carousel-item button{
+  width: fit-content;
+  background-color: inherit;
+  color: #FB5624;
+  border: none;
+}
+</style>
