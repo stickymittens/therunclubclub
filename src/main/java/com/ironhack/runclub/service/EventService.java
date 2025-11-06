@@ -70,7 +70,7 @@ public class EventService {
     }
 
     public void signUpForEvent(Authentication auth, Long eventId) {
-        String username = auth.getName();  // ✅ the username from the JWT
+        String username = auth.getName();
         User userToSignUp = userService.getUser(username);
 
         Event event = eventRepository.findEventById(eventId)

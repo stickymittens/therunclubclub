@@ -8,7 +8,7 @@ const locationStore = useLocationStore()
 
 function logout() {
   clearToken();         // clears localStorage and updates reactive token
-  locationStore.city = null;
+  // locationStore.city = null;
   router.push("/events"); // navigate after logout
 }
 </script>

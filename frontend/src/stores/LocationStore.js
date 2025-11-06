@@ -4,8 +4,8 @@ export const useLocationStore = defineStore('location', {
     state: () => ({
         latitude: null,
         longitude: null,
-        city: null
-        // city: "BARCELONA"
+        // city: null
+        city: "BARCELONA"
     }),
     actions: {
         setLocation(lat, lon) {

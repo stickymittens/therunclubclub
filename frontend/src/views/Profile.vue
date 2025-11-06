@@ -3,6 +3,8 @@ import {computed, onMounted, ref} from "vue";
 import LogOutComponent from "@/components/LogOutComponent.vue";
 import axios from "axios";
 import {token} from "@/auth.js";
+import AddClub from "@/components/AddClub.vue";
+import ClubsDisplay from "@/components/ClubsDisplay.vue";
 
   const activeTab = ref('joined');
   const loading = ref(null)
@@ -20,13 +22,6 @@ function formatTime(dateTime) {
     hour: '2-digit',
     minute: '2-digit'
   })
-}
-
-//format pace
-function formatPace(pace) {
-  const minutes = Math.floor(pace)
-  const seconds = Math.round((pace - minutes) * 60)
-  return `${minutes}:${seconds.toString().padStart(2, '0')}`
 }
 
 const loadJoinedEvents = async () => {
@@ -119,9 +114,8 @@ const leaveEvent = async (id) => {
 
     <div class="profile-body">
       <div v-if="activeTab === 'hosted'">
-        <div>+ Add a Club or Event</div>
-        <div>Hosted Clubs</div>
-        <div>Hosted Events</div>
+        <AddClub/>
+        <ClubsDisplay/>
       </div>
     </div>
 

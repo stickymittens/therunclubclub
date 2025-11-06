@@ -101,6 +101,9 @@ public class SecurityConfig {
                         .requestMatchers("/events/**").permitAll()
                         .requestMatchers("/cities").permitAll()
                         .requestMatchers("/api/login").permitAll()
+                        .requestMatchers(POST, "/clubs").hasAnyAuthority("ROLE_USER")
+                        .requestMatchers(DELETE, "/clubs").hasAnyAuthority("ROLE_USER")
+                        .requestMatchers("/clubs/**").hasAnyAuthority("ROLE_USER")
                         .anyRequest().authenticated()); // any other endpoints require authentication
 
         // add the custom authentication filter to the http security object

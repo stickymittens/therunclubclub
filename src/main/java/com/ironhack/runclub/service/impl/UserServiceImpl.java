@@ -1,6 +1,7 @@
 package com.ironhack.runclub.service.impl;
 
 import com.ironhack.runclub.enums.CitiesEnum;
+import com.ironhack.runclub.model.Club;
 import com.ironhack.runclub.model.Event;
 import com.ironhack.runclub.model.User;
 import com.ironhack.runclub.repository.UserRepository;

@@ -14,14 +14,14 @@ public class Club {
 
     private String clubDescription;
 
-    //based on existing events
-    private int totalRunners;
-    private int totalDistance;
-    private double clubScore;
-
     @ManyToOne
     @JoinColumn(name = "club_owner_id")
     private User clubOwner;
+
+    //based on existing events
+//    private int totalRunners;
+//    private int totalDistance;
+//    private double clubScore;
 
 
     //getters and setters
@@ -45,30 +45,13 @@ public class Club {
         this.clubDescription = clubDescription;
     }
 
-    public int getTotalRunners() {
-        return totalRunners;
+    public User getClubOwner() {
+        return clubOwner;
     }
 
-    public void setTotalRunners(int totalRunners) {
-        this.totalRunners = totalRunners;
+    public void setClubOwner(User clubOwner) {
+        this.clubOwner = clubOwner;
     }
-
-    public int getTotalDistance() {
-        return totalDistance;
-    }
-
-    public void setTotalDistance(int totalDistance) {
-        this.totalDistance = totalDistance;
-    }
-
-    public double getClubScore() {
-        return clubScore;
-    }
-
-    public void setClubScore(double clubScore) {
-        this.clubScore = clubScore;
-    }
-
 
     //constructors
     public Club(String clubName, String clubDescription) {
