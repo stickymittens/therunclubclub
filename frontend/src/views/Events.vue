@@ -52,6 +52,7 @@
 .container{
   position: relative;
   padding: 2rem 1rem;
+  width: 100%;
 }
 
 .modal-background{

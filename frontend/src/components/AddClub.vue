@@ -18,8 +18,7 @@
     if(token.value){
       try {
         const response = await axios.post("http://localhost:8080/clubs", club.value,
-            {
-              headers: {
+            {headers: {
                 Authorization: `Bearer ${token.value}`,
               },
             })

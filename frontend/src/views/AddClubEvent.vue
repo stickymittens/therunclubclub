@@ -12,5 +12,6 @@ import AddEvent from "@/components/AddEvent.vue";
 <style scoped>
 .container{
   padding: 2rem 1rem;
+  width: 100%;
 }
 </style>

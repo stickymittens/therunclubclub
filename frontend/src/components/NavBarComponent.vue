@@ -1,6 +1,6 @@
 <script setup>
   import {useRouter} from "vue-router";
-  import {computed, ref, watchEffect} from "vue";
+  import {computed} from "vue";
   import {token} from "@/auth.js";
   import {jwtDecode} from "jwt-decode";
 
@@ -60,7 +60,7 @@
 .container{
   position: relative;
   background-color: #FB5624;
-  width: 100vw;
+  width: 100%;
 }
 
 ul{

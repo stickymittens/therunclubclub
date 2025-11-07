@@ -3,13 +3,16 @@ package com.ironhack.runclub.service;
 import com.ironhack.runclub.enums.CitiesEnum;
 import com.ironhack.runclub.exceptions.NoItemWithThisId;
 import com.ironhack.runclub.exceptions.NoUpcomingEvents;
+import com.ironhack.runclub.model.Club;
 import com.ironhack.runclub.model.Event;
 import com.ironhack.runclub.model.User;
+import com.ironhack.runclub.repository.ClubRepository;
 import com.ironhack.runclub.repository.EventRepository;
 import com.ironhack.runclub.repository.UserRepository;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestBody;
 
 import java.time.OffsetDateTime;
 import java.time.OffsetTime;
@@ -19,10 +22,12 @@ import java.util.List;
 public class EventService {
     private final EventRepository eventRepository;
     private final UserService userService;
+    private final ClubRepository clubRepository;
 
-    public EventService(EventRepository eventRepository, UserService userService){
+    public EventService(EventRepository eventRepository, UserService userService, ClubRepository clubRepository){
         this.eventRepository = eventRepository;
         this.userService = userService;
+        this.clubRepository = clubRepository;
     }
 
     //CRUD
@@ -69,6 +74,7 @@ public class EventService {
         return event.getSignedUpUsers();
     }
 
+    //join / leave event
     public void signUpForEvent(Authentication auth, Long eventId) {
         String username = auth.getName();
         User userToSignUp = userService.getUser(username);
@@ -100,23 +106,11 @@ public class EventService {
     }
 
     //FILTERS
-//    public List<Event> filterByStartTime(OffsetTime min, OffsetTime max){
-//        return eventRepository
-//                .findEventsByDateTimeBetween(min, max)
-//                .orElseThrow(() -> new NoItemWithThisId("No events for the chosen pace"));
-//    }
-
     public List<Event> filterByCity(CitiesEnum city){
         return eventRepository
                 .findEventsByCity(city)
                 .orElseThrow(() -> new NoItemWithThisId("No events for the chosen city"));
     }
-
-//    public List<Event> filterByPace(double min, double max){
-//        return eventRepository
-//                .findEventsByPaceBetween(min, max)
-//                .orElseThrow(() -> new NoItemWithThisId("No events for the chosen pace"));
-//    }
 
     public List<Event> filterByPace(CitiesEnum city, double min, double max){
         return eventRepository
@@ -124,17 +118,47 @@ public class EventService {
                 .orElseThrow(() -> new NoItemWithThisId("No events for the chosen pace"));
     }
 
-
-//    public List<Event> filterByDistance(double min, double max){
-//        return eventRepository
-//                .findEventsByDistanceBetween(min, max)
-//                .orElseThrow(() -> new NoItemWithThisId("No events for the chosen distance"));
-//    }
-
     public List<Event> filterByDistance(CitiesEnum city, double min, double max){
         return eventRepository
                 .findEventsByCityAndDistanceBetween(city, min, max)
                 .orElseThrow(() -> new NoItemWithThisId("No events for the chosen distance"));
+    }
+
+    public List<Event> getEventsByEventOwner(Authentication auth){
+        String username = auth.getName();
+        User eventOwner = userService.getUser(username);
+
+        return eventRepository
+                .findEventsByEventOwner(eventOwner)
+                .orElseThrow(() -> new NoItemWithThisId("No events for this user"));
+    }
+
+    public Event createEventByLoggedInUser(Authentication auth, @RequestBody Event event){
+        String username = auth.getName();
+        User eventOwner = userService.getUser(username);
+
+        if(clubRepository.findClubsByClubOwner(eventOwner).isEmpty()){
+            throw new IllegalStateException("Event can't be cerated without a club, user needs to create a club first");
+        }
+
+        event.setEventOwner(eventOwner);
+
+        return eventRepository.save(event);
+    }
+
+    public void deleteEventByLoggedInUser(Authentication auth, Long id){
+        String username = auth.getName();
+        User eventOwner = userService.getUser(username);
+
+        Event eventToDelete = eventRepository
+                .findEventById(id)
+                .orElseThrow(() -> new NoItemWithThisId("No event with this ID"));
+
+        if(!eventToDelete.getEventOwner().equals(eventOwner)){
+            throw new IllegalStateException("You're not the event owner");
+        }
+
+        eventRepository.delete(eventToDelete);
     }
 }
 

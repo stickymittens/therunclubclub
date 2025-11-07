@@ -174,6 +174,8 @@ const leaveEvent = async (id) => {
   flex-direction: column;
   gap: 2rem;
   padding: 0 1rem;
+
+  width: 100%;
 }
 
 h1{

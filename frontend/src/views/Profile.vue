@@ -5,6 +5,8 @@ import axios from "axios";
 import {token} from "@/auth.js";
 import AddClub from "@/components/AddClub.vue";
 import ClubsDisplay from "@/components/ClubsDisplay.vue";
+import AddEvent from "@/components/AddEvent.vue";
+import EventsDisplay from "@/components/EventsDisplay.vue";
 
   const activeTab = ref('joined');
   const loading = ref(null)
@@ -110,25 +112,31 @@ const leaveEvent = async (id) => {
         </div>
 
       </div>
-    </div>
+      <div>
+        <div v-if="activeTab === 'hosted'">
+          <ul class="clubs-carousel">
+            <li><ClubsDisplay/></li>
+            <li><AddClub/></li>
+          </ul>
 
-    <div class="profile-body">
-      <div v-if="activeTab === 'hosted'">
-        <ul class="clubs-carousel">
-          <li><ClubsDisplay/></li>
-          <li><AddClub/></li>
-        </ul>
+          <ul class="clubs-carousel">
+            <li><EventsDisplay/></li>
+            <li>+ Add a new event</li>
+          </ul>
+        </div>
       </div>
+
+
     </div>
 
-<!--    <AddEvent></AddEvent>-->
-<!--    <AddClub></AddClub>-->
   </div>
 </template>
 
 <style scoped>
   .container{
     color: white;
+    max-width: 430px;
+    max-height: 932px;
   }
 
   .message{
@@ -188,6 +196,7 @@ const leaveEvent = async (id) => {
     width: 100%;
 
     overflow-x: auto;
+    scroll-snap-type: x mandatory;
     scroll-behavior: smooth;
     list-style: none;
     background-color: #181818;
@@ -196,7 +205,11 @@ const leaveEvent = async (id) => {
 
     height: max-content;
     box-sizing: border-box;
+  }
 
+  .clubs-carousel > * {
+    flex: 0 0 auto;
+    scroll-snap-align: center;
   }
 
   .clubs-carousel li{
@@ -212,20 +225,4 @@ const leaveEvent = async (id) => {
     color: #fff;
     background: #181818;
   }
-
-  /* AddClub card
-  .clubs-carousel li:nth-child(2) {
-    background: linear-gradient(180deg, rgba(251,86,36,0.15), rgba(251,86,36,0.05));
-    color: #FB5624;
-    border: 1px dashed rgba(251, 86, 36, 0.4);
-    font-weight: 600;
-    cursor: pointer;
-    padding: 1rem;
-  }
-
-  .clubs-carousel li:nth-child(2):hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 24px rgba(0, 0, 0, 0.6);
-  }
-  */
 </style>

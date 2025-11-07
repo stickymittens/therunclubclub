@@ -97,6 +97,8 @@ public class SecurityConfig {
                         .requestMatchers("/events/upcoming").permitAll()
                         .requestMatchers(POST, "/events/*/sign-up").hasAnyAuthority("ROLE_USER")
                         .requestMatchers(DELETE, "/events/*/leave").hasAnyAuthority("ROLE_USER")
+                        .requestMatchers("/events/owned-events").hasAnyAuthority("ROLE_USER")
+                        .requestMatchers("/events/owned-events/**").hasAnyAuthority("ROLE_USER")
                         .requestMatchers("/joined-events").hasAnyAuthority("ROLE_USER")
                         .requestMatchers("/events/**").permitAll()
                         .requestMatchers("/cities").permitAll()

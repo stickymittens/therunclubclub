@@ -1,30 +1,82 @@
 <script setup>
 import axios from "axios";
 import { ref } from "vue";
+import {token} from "@/auth.js";
 
-const date = ref('');
-const time = ref('10:00');
-const distance = ref('');
-const pace = ref('');
-const meetingPoint = ref('');
-const description = ref('');
-const message = ref("");
+const date = ref(null);
+const time = ref(null);
+const meetingPoint = ref(null);
+const city = ref(null)  //existing enum
+const distance = ref(null);
+const pace = ref(null);
+const club = ref(null)  //from user's created clubs
+const description = ref(null);
+const message = ref(null);
+const event = ref({})
 
-const event = ref({
-  distance: Number(distance.value),
-  pace: Number(pace.value),
-  meetingPoint: meetingPoint.value,
-  eventDescription: description.value,
-  dateTime: `${date.value}T${time.value}:00+02:00`,
-  // club: { id: 1 }  // optional if club is required
-});
+const cities = ref([])
+const loadingCities = ref(true)
+const errorCities = ref(null)
+const clubs = ref([])
+const loadingClubs = ref(true)
+const errorClubs = ref(null)
+
+const fetchCities = async() =>{
+  try {
+    const res = await axios.get('http://192.168.1.128:8080/cities')
+    cities.value = res.data
+
+  } catch (err) {
+    console.error('Failed to load cities:', err)
+    errorCities.value = "Error to load cities"
+  } finally{
+    loadingCities.value = false
+  }
+}
+
+
+const fetchOwnedClubs = async() =>{
+  if(token.value){
+    try {
+      const res = await axios.get('http://192.168.1.128:8080/clubs/owned-clubs', {
+        headers: {
+          Authorization: `Bearer ${token.value}`
+        }
+      })
+      clubs.value = res.data
+
+    } catch (err) {
+      console.error('Failed to load clubs', err)
+      errorClubs.value = "Error to load clubs"
+    } finally {
+      loadingClubs.value = false
+    }
+  }
+}
+
+
 
 const addEvent = async () => {
-  try {
-    const isoString = `${date.value}T${time.value}:00+02:00`; // Spain time
-    event.value.dateTime = isoString;
+  event.value = {
+    distance: Number(distance.value),
+    pace: Number(pace.value),
+    meetingPoint: meetingPoint.value,
+    city: city.value,
+    club: club.value,
+    eventDescription: description.value,
+    dateTime: `${date.value}T${time.value}:00+02:00`,
+  };
+  console.log(event.value)
 
-    const response = await axios.post("http://localhost:8080/events", event.value)
+  try {
+    //spanish time
+    event.value.dateTime = `${date.value}T${time.value}:00+02:00`;
+
+    const response = await axios.post("http://localhost:8080/events/owned-events", event.value,
+        {headers: {
+        Authorization: `Bearer ${token.value}`
+      },
+    })
     message.value = `"${response.data.distance}"km run added successfully!`;
 
     // reset form
@@ -33,15 +85,11 @@ const addEvent = async () => {
     distance.value = '';
     pace.value = '';
     meetingPoint.value = '';
+    city.value = '';
+    club.value = '';
     description.value = '';
+    event.value = {};
 
-    event.value = {
-      distance: 0,
-      pace: 0,
-      meetingPoint: '',
-      eventDescription: '',
-      dateTime: ''
-    };
   } catch (error) {
     console.error(error);
     message.value = "Error adding event.";
@@ -65,23 +113,40 @@ const addEvent = async () => {
       </div>
 
       <div>
-        <label>Meeting Point</label>
-        <textarea v-model="event.meetingPoint"></textarea>
-      </div>
-
-      <div>
         <label>Distance</label>
-        <textarea v-model="event.distance"></textarea>
+        <textarea v-model="distance"></textarea>
       </div>
 
       <div>
         <label>Pace</label>
-        <textarea v-model="event.pace"></textarea>
+        <textarea v-model="pace"></textarea>
+      </div>
+
+      <div>
+        <label>Meeting Point</label>
+        <textarea v-model="meetingPoint"></textarea>
+      </div>
+
+      <div>
+        <label>City</label>
+        <textarea v-model="city"></textarea>
+      </div>
+
+      <div>
+        <label>Club</label>
+        <select v-model="club">
+          <option
+              v-for="club in clubs"
+              :key="club.id"
+              :value="club">
+            {{ club.name }}
+          </option>
+        </select>
       </div>
 
       <div>
         <label>Description</label>
-        <textarea v-model="event.eventDescription"></textarea>
+        <textarea v-model="description"></textarea>
       </div>
 
 

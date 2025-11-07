@@ -53,6 +53,7 @@ public class Club {
         this.clubOwner = clubOwner;
     }
 
+
     //constructors
     public Club(String clubName, String clubDescription) {
         this.clubName = clubName;

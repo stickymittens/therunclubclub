@@ -1,14 +1,11 @@
 package com.ironhack.runclub.controller;
 
 import com.ironhack.runclub.enums.CitiesEnum;
-import com.ironhack.runclub.exceptions.NoItemWithThisId;
-import com.ironhack.runclub.exceptions.NoUpcomingEvents;
 import com.ironhack.runclub.model.Event;
 import com.ironhack.runclub.model.User;
 import com.ironhack.runclub.service.EventService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.OffsetDateTime;
@@ -50,6 +47,11 @@ public class EventController {
     @DeleteMapping("/events")
     public void deleteEvent(Long id){
         eventService.deleteEvent(id);
+    }
+
+    @DeleteMapping("/events/owned-events/{id}")
+    public void deleteEventForLoggedInUser(Authentication auth, @PathVariable Long id){
+        eventService.deleteEventByLoggedInUser(auth, id);
     }
 
     //get upcoming events
@@ -98,5 +100,16 @@ public class EventController {
     @GetMapping("/events/upcoming/{city}/filtered-by-distance")
     public List<Event> filteredByDistance(@PathVariable CitiesEnum city, @RequestParam double min, @RequestParam double max){
         return eventService.filterByDistance(city, min, max);
+    }
+
+    //owned events
+    @GetMapping("/events/owned-events")
+    public List<Event> getEventsByEventOwner(Authentication auth){
+        return eventService.getEventsByEventOwner(auth);
+    }
+
+    @PostMapping("/events/owned-events")
+    public Event createEventByLoggedInUser(Authentication auth, @RequestBody Event event){
+        return eventService.createEventByLoggedInUser(auth, event);
     }
 }

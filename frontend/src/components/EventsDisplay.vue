@@ -5,24 +5,31 @@ import {onMounted, ref} from "vue";
 
 const loading = ref(null)
 const error = ref(null)
-const clubs = ref([])
+const events = ref([])
 const message = ref(null)
 
 
-const loadClubs= async () => {
+//format pace
+function formatPace(pace) {
+  const minutes = Math.floor(pace)
+  const seconds = Math.round((pace - minutes) * 60)
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`
+}
+
+const loadEvents= async () => {
   loading.value = true
   error.value = null
 
   if(token.value){
     try {
-      const res = await axios.get('http://192.168.1.128:8080/clubs/owned-clubs', {
+      const res = await axios.get('http://192.168.1.128:8080/events/owned-events', {
         headers: {
           Authorization: `Bearer ${token.value}`
         }
       })
 
-      clubs.value = res.data
-      reloadClubs()
+      events.value = res.data
+      reloadEvents()
     } catch (err) {
       console.error(err)
       error.value = 'Failed to load clubs'
@@ -32,31 +39,31 @@ const loadClubs= async () => {
   }
 }
 
-const deleteClub = async (id) => {
+const deleteEvent = async (id) => {
   try {
     if(token.value){
       await axios.delete(
-          `http://localhost:8080/clubs/delete-club/${id}`,
+          `http://localhost:8080/events/owned-events/${id}`,
           {
             headers: {
               Authorization: `Bearer ${token.value}`,
             },
           })
-      message.value = `Left successfully!`;
+      message.value = `Deleted successfully!`;
     }
-    reloadClubs()
+    reloadEvents()
   } catch (error) {
     console.error(error);
-    message.value = "Error leaving";
+    message.value = "Error deleting";
   }
 };
 
 onMounted(() => {
-  loadClubs()
+  loadEvents()
 })
 
-function reloadClubs(){
-  loadClubs()
+function reloadEvents(){
+  loadEvents()
 }
 
 </script>
@@ -64,19 +71,20 @@ function reloadClubs(){
 <template>
   <div class="container">
     <div v-if="loading">
-      <p class="message">Loading clubs..</p>
+      <p class="message">Loading events..</p>
     </div>
-    <div v-else-if="!loading&&clubs.length === 0">
-      <p>You haven't started a club yet</p>
+    <div v-else-if="!loading&&events.length === 0">
+      <p>You haven't created any events yet</p>
     </div>
     <div v-else class="ul-container">
       <div v-if="loading">Loading events...</div>
       <div v-else-if="error" class="error">{{ error }}</div>
 
       <div v-else class="carousel">
-        <div v-for="(club, index) in clubs" :key="club.id || index" class="carousel-item">
-          <p>{{club.clubName}}</p>
-          <button @click="deleteClub(club.id)">delete club</button>
+        <div v-for="(event, index) in events" :key="event.id || index" class="carousel-item">
+          <p>{{ event.distance }} km - {{ formatPace(event.pace) }} min/km</p>
+          <p>{{event.meetingPoint}}</p>
+          <button @click="deleteEvent(event.id)">delete event</button>
         </div>
       </div>
 
@@ -135,13 +143,13 @@ function reloadClubs(){
 }
 
 .carousel-item:hover {
-  box-shadow: 0 0 12px rgba(251, 86, 36, 0.2);
+  box-shadow: 0 0 12px rgba(46, 139, 255, 0.25);
 }
 
 .carousel-item button{
   width: fit-content;
   background-color: inherit;
-  color: #FB5624;
+  color: #2E8BFF;
   border: none;
 }
 </style>
