@@ -3,11 +3,13 @@ import { ref } from "vue";
 import {setToken, token} from "@/auth";
 import {useLocationStore} from "@/stores/LocationStore.js";
 import axios from "axios";
+import {useRouter} from "vue-router";
 
 const username = ref("");
 const password = ref("");
 const message = ref("");
 const locationStore = useLocationStore()
+const router = useRouter()
 
 const login = async () => {
   try {
@@ -34,6 +36,7 @@ const login = async () => {
 
     locationStore.city = res.data;
 
+    router.push("/profile")
   } catch (err) {
     message.value = err.message;
   }
