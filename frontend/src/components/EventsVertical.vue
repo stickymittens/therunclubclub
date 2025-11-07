@@ -281,7 +281,7 @@ function resetFilters(){
       <div v-else>
         <div v-for="group in groupedEvents" :key="group.label" class="date-block">
           <h2 class="date-header">{{ group.label }}</h2>
-          <ul v-if="!loading">
+          <ul>
             <li class="event" v-for="event in group.events" :key="event.id" @click="openEvent(event.id)">
               <div class="hour-club-pace">
                 <div class="hour-club">

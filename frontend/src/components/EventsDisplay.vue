@@ -83,7 +83,7 @@ function reloadEvents(){
       <div v-else class="carousel">
         <div v-for="(event, index) in events" :key="event.id || index" class="carousel-item">
           <p>{{ event.distance }} km - {{ formatPace(event.pace) }} min/km</p>
-          <p>{{event.meetingPoint}}</p>
+          <p>{{event.meetingPoint}}, {{event.city}}</p>
           <button @click="deleteEvent(event.id)">delete event</button>
         </div>
       </div>
@@ -131,11 +131,11 @@ function reloadEvents(){
 
   flex: 0 0 auto;
   width: 100%;
+  min-height: 20vh;
 
   border-radius: 12px;
   color: #fff;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.4));
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px dotted #2E8BFF;
   font-weight: 600;
   cursor: pointer;
 

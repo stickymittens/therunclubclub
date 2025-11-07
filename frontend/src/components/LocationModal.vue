@@ -75,21 +75,19 @@
 
     <div class="section">
       <img id="map" src="/Users/karolina/IdeaProjects/runClub/frontend/src/components/icons/location-services-map.png" alt="map picture"/>
-      <button @click="enableLocation">ENABLE LOCATION SERVICE</button>
+      <button @click="enableLocation" class="services-btn">ENABLE LOCATION SERVICE</button>
     </div>
 
     <div id="or">OR</div>
 
     <div class="section">
 
-      <!-- Dropdown container with ref for outside click -->
       <div class="custom-dropdown" ref="dropdownRef">
         <button @click="toggleDropdown" class="dropdown-btn">
 
           {{ locationStore.city || '-- Select a city --' }}
         </button>
 
-        <!-- Dropdown list -->
         <ul v-if="showDropdown" class="dropdown-list">
           <li
               v-for="city in cities"
@@ -106,7 +104,6 @@
 
 <style scoped>
   .container{
-    width: 80vw;
     padding: 2rem 1rem;
 
     background-color: white;
@@ -146,41 +143,46 @@
     border-radius: 8px;
   }
 
+  .services-btn{
+    margin: 0 1rem;
+  }
+
   h2{
     font-size: 18px;
   }
 
   .custom-dropdown {
-    position: relative; /* important: dropdown list is relative to this */
+    position: relative;
+    display: flex;
+    justify-content: center;
     width: 100%;
   }
 
   .dropdown-btn {
-    width: 100%;
     padding: 0.5rem 1rem;
     border-radius: 8px;
     background-color: #FB5624;
     color: white;
     border: none;
     cursor: pointer;
+    margin-bottom: 1rem;
   }
 
   .dropdown-list {
-    position: absolute; /* floats above other content */
-    top: 100%; /* roll out below the button */
+    position: absolute;
+    top: 100%;
     left: 0;
     width: 100%;
-    height: 200px;
-    max-height: 30vh; /* optional: scroll if too long */
-    overflow-y: auto; /*scrollable*/
+    height: max-content;
+    max-height: 30vh;
+    overflow-y: auto;
     background-color: white;
     border: 1px solid #ddd;
     border-radius: 8px;
-    z-index: 1000; /* make sure it floats above container */
+    z-index: 1000;
     list-style: none;
     margin: 0;
     padding: 0;
-
   }
 
   .dropdown-list li {

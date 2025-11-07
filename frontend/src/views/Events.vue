@@ -74,5 +74,7 @@
   transform: translate(-50%, -50%);
   visibility: visible;
   z-index: 101;
+
+  width: 80%;
 }
 </style>

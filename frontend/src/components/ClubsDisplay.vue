@@ -103,9 +103,11 @@ function reloadClubs(){
   scroll-snap-type: x mandatory;
   list-style: none;
 
-  width: 100vw;
+  width: 100%;
   background-color: #181818;
   padding: 1rem;
+
+  z-index: 10;
 }
 
 .carousel > * {
@@ -123,11 +125,11 @@ function reloadClubs(){
 
   flex: 0 0 auto;
   width: 100%;
+  min-height: 20vh;
 
   border-radius: 12px;
   color: #fff;
-  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.4));
-  border: 1px solid rgba(255, 255, 255, 0.05);
+  border: 1px dotted #FB5624;
   font-weight: 600;
   cursor: pointer;
 

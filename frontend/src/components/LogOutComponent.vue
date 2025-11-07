@@ -1,15 +1,11 @@
 <script setup>
 import { token, clearToken } from "@/auth"; // use shared reactive token
 import { useRouter } from "vue-router";
-import {useLocationStore} from "@/stores/LocationStore.js";
-
 const router = useRouter();
-const locationStore = useLocationStore()
 
 function logout() {
-  clearToken();         // clears localStorage and updates reactive token
-  // locationStore.city = null;
-  router.push("/events"); // navigate after logout
+  clearToken();
+  router.push("/events");
 }
 </script>
 

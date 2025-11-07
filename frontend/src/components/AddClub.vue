@@ -53,10 +53,10 @@
         <input v-model="clubName" />
       </div>
 
-      <div class="label-input">
-        <label >Description</label>
-        <input v-model="clubDescription"/>
-      </div>
+<!--      <div class="label-input">-->
+<!--        <label >Description</label>-->
+<!--        <input v-model="clubDescription"/>-->
+<!--      </div>-->
 
       <button type="submit" class="submit-btn">
         Add Club
@@ -73,9 +73,10 @@
   display: flex;
   flex-direction: column;
   gap: 1rem;
-  padding: 1.5rem;
+  font-size: 16px;
+  padding: 1rem;
 
-  max-height: 20vh;
+  max-height: fit-content;
   box-sizing: border-box;
 
   color: rgba(255, 255, 255, 0.8);  /* soft off-white text */
@@ -93,7 +94,7 @@
 }
 
 h2{
-  font-size: 24px;
+  font-size: 20px;
   text-align: left;
 }
 
@@ -107,6 +108,7 @@ h2{
 /* Arrange label + input side by side */
 .label-input {
   display: flex;
+  align-items: center;
   justify-content: space-between;
   text-align: left;
   gap: 0.8rem;
