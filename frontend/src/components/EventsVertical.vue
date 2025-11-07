@@ -114,22 +114,31 @@ onMounted(() => {
 
 //divide days by dates
 const groupedEvents = computed(() => {
-  const groups = {}
+  // Map of date -> events
+  const groups = new Map();
 
   events.value.forEach(event => {
-    const d = new Date(event.dateTime)
-    const weekday = d.toLocaleDateString('en-UK', { weekday: 'short' }).toUpperCase() // MON
-    const day = d.getDate()
-    const month = d.getMonth() + 1
-    const date = `${weekday} ${day}.${month}`
+    const d = new Date(event.dateTime);
+    const weekday = d.toLocaleDateString('en-UK', { weekday: 'short' }).toUpperCase(); // MON
+    const day = d.getDate();
+    const month = d.getMonth() + 1;
 
-    if (!groups[date]) {
-      groups[date] = []
+    // Use YYYY-MM-DD as key to ensure chronological sorting
+    const key = d.toISOString().split('T')[0];
+    const label = `${weekday} ${day}.${month}`;
+
+    if (!groups.has(key)) {
+      groups.set(key, { label, events: [] });
     }
-    groups[date].push(event)
-  })
-  return groups
-})
+
+    groups.get(key).events.push(event);
+  });
+
+  // Convert to array and sort by actual date
+  return Array.from(groups.entries())
+      .sort(([a], [b]) => new Date(a) - new Date(b))
+      .map(([_, value]) => value);
+});
 
 //open event page by event id
 function openEvent(id) {
@@ -217,14 +226,6 @@ function resetFilters(){
   <div v-if="filterModalVisible" ref="modalBackground" class="modal-background"></div>
   <div v-if="filterModalVisible" ref="filterModal">
 
-<!--    <div v-if="selectedFilter === 'all'" class="all-options-modal">-->
-<!--      <p>showing all options</p>-->
-<!--    </div>-->
-
-<!--    <div v-if="selectedFilter === 'time'" class="filter-modal">-->
-<!--      <p>showing time options</p>-->
-<!--    </div>-->
-
     <div v-if="selectedFilter === 'pace'" class="filter-modal">
       <p>Currently available paces:</p>
       <FilterInput
@@ -235,7 +236,7 @@ function resetFilters(){
           :decimalPlaces="2"
           @updateFilters="updatePace"
       />
-      <button @click="resetPace()">Reset</button>
+      <button @click="resetPace()" class="small-text">Reset</button>
     </div>
 
     <div v-if="selectedFilter === 'distance'" class="filter-modal">
@@ -248,45 +249,45 @@ function resetFilters(){
           :decimalPlaces="1"
           @updateFilters="updateDistance"
       />
-      <button @click="resetDistance()">Reset</button>
+      <button @click="resetDistance()" class="small-text">Reset</button>
     </div>
   </div>
 
 
   <div class="container">
-    <nav>
-      <h1 v-if="locationStore.city">{{ locationStore.city }}
-        <button @click="openCitiesModal" id="change-city-btn">change city</button>
-      </h1>
-      <h1 v-else-if="locationStore.longitude">Events in your area</h1>
-      <h1 v-else></h1>
-    </nav>
+    <div class="profile-head">
 
-    <div class="filters-container">
-      <ul class="filters">
-        <!--      <li class="filter" :class="{ selected: selectedFilter === 'all' }" @click.stop="selectFilter('all')">Icon</li>-->
-        <!--      <li class="filter" :class="{ selected: selectedFilter === 'time' }" @click.stop="selectFilter('time')">Start Time</li>-->
-        <li ref="paceFilter" class="filter" :class="{ selected: selectedFilter === 'pace' }" @click.stop="selectFilter('pace')">Pace</li>
-        <li ref="distanceFilter" class="filter" :class="{ selected: selectedFilter === 'distance' }" @click.stop="selectFilter('distance')">Distance</li>
-      </ul>
+      <div>
+        <div v-if="locationStore.city" class="title">
+          <h1>{{ locationStore.city }}</h1>
+          <button @click="openCitiesModal" class="small-text change-city-btn">change city</button>
+        </div>
+        <div v-else-if="locationStore.longitude" class="title">
+          <h1>Events in your area</h1>
+        </div>
+      </div>
 
-      <button id="reset-filters-btn" @click="resetFilters()">Reset filters</button>
+      <div class="filters-container">
+        <ul class="filters">
+          <li ref="paceFilter" class="filter" :class="{ selected: selectedFilter === 'pace' }" @click.stop="selectFilter('pace')">Pace</li>
+          <li ref="distanceFilter" class="filter" :class="{ selected: selectedFilter === 'distance' }" @click.stop="selectFilter('distance')">Distance</li>
+        </ul>
+        <button class="small-text reset-filters-btn" @click="resetFilters()">Reset filters</button>
+      </div>
     </div>
 
-    <div class="ul-container">
+
+    <div class="profile-body">
       <div v-if="loading">Loading events...</div>
       <div v-else-if="error" class="error">{{ error }}</div>
-
       <div v-else>
-        <div v-for="(dayEvents, date) in groupedEvents" :key="date" class="date-block">
-          <h2 class="date-header">{{ date }}</h2>
-          <div v-if="dayEvents.length === 0">No events scheduled</div>
-          <ul v-else>
-            <li class="event" v-for="event in dayEvents" :key="event.id" @click="openEvent(event.id)">
+        <div v-for="group in groupedEvents" :key="group.label" class="date-block">
+          <h2 class="date-header">{{ group.label }}</h2>
+          <ul>
+            <li class="event" v-for="event in group.events" :key="event.id" @click="openEvent(event.id)">
               <div class="hour-club-pace">
                 <div class="hour-club">
                   <p>{{ formatTime(event.dateTime) }}</p>
-<!--                  <p class="club">{{ event.club.clubName }}</p>-->
                   <p class="club">{{event.city}}</p>
                 </div>
                 <p class="small-text">{{ event.distance }} km - {{ formatPace(event.pace) }} min/km</p>
@@ -301,20 +302,33 @@ function resetFilters(){
           </ul>
         </div>
       </div>
-
     </div>
+
   </div>
 </template>
 
 <style scoped>
 .container{
   position: relative;
-
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+}
 
-  margin: 0;
+.error {
+  background-color: #181818;
+  color: white;
+}
+
+ul{
+  list-style: none;
+}
+
+.small-text{
+  font-size: 12px;
+  font-weight: 200;
+  background-color: inherit;
+  border: none;
+  color: #FB5624;
 }
 
 .cities-modal{
@@ -322,49 +336,7 @@ function resetFilters(){
   width: 80vw;
   top: 6rem;
   left: 10vw;
-  z-index: 101;
-}
-
-h1{
-  height: 6rem;
-  display: flex;
-  align-items: center;
-  gap: 0.5rem;
-  font-weight: 800;
-
-  background-color: pink;
-}
-
-.filters-container{
-  display: flex;
-  gap: 1rem;
-}
-
-#reset-filters-btn{
-  background-color: inherit;
-  color: #FB5624;
-  font-weight: 200;
-  border: none;
-
-  width: fit-content;
-}
-
-.filters{
-  display: flex;
-  gap: 1rem;
-  width: 100%;
-}
-
-.filter{
-  background-color: #FB5624;
-  opacity: 0.6;
-
-  padding: 0.5rem 1rem;
-  border-radius: 25px;
-}
-
-.filter.selected{
-  opacity: 1;
+  z-index: 1001;
 }
 
 .filter-modal{
@@ -386,23 +358,6 @@ h1{
   align-items: center;
 }
 
-.all-options-modal{
-  position: fixed;
-  left: 0;
-
-  height: 100vh;
-  width: 100vw;
-
-  color: white;
-  background-color: #181818;
-  z-index: 1001;
-
-  display: flex;
-  justify-content: center;
-  align-items: center;
-
-}
-
 .modal-background{
   position: fixed;
   left: 0;
@@ -414,30 +369,67 @@ h1{
   z-index: 1000;
 }
 
-.ul-container {
-  position: relative;
-  font-family: Arial, sans-serif;
+.profile-head{
+  position: sticky;
+  top: 0;
+  left: 0;
 
-  overflow-y: auto;
-  -webkit-overflow-scrolling: touch;
-
-  margin-bottom: 20vh;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 20vh;
+  background-color: #000000;
+  z-index: 101;
 }
 
-::-webkit-scrollbar  {
-  display: none;
+.title{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  height: 10vh;
+  padding-top: 1rem;
+  padding-left: 1rem;
 }
 
-.error {
-  background-color: #181818;
-  color: rgba(223, 41, 41, 0.85);
-}
-
-#change-city-btn{
+.change-city-btn{
   color: white;
-  font-size: 12px;
-  background-color: #181818;
-  border: none;
+}
+
+.filters-container{
+  height: 10vh;
+  list-style-type: none;
+
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  color: white;
+  padding: 0 1rem;
+}
+
+.filters{
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0;
+}
+
+.filter{
+  background-color: #FB5624;
+  opacity: 0.6;
+
+  padding: 0.5rem 1rem;
+  border-radius: 25px;
+}
+
+.filter.selected{
+  opacity: 1;
+}
+
+.profile-body {
+  overflow-y: auto;
+  margin-bottom: 15vh;
+  padding: 1rem;
 }
 
 .date-header{
@@ -445,21 +437,16 @@ h1{
   font-weight: 800;
   border-bottom: 1px solid white;
   margin-bottom: 1rem;
-}
-
-ul{
-  list-style: none;
-  font-size: 16px;
-  margin: 0;
   padding: 0;
-
 }
 
 .event{
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding-bottom: 2rem;
+  padding: 0 0 1rem 0;
+  margin: 0;
+  background-color: green;
 }
 
 .hour-club-pace{
@@ -479,10 +466,4 @@ ul{
 .invisible-time{
   visibility: hidden;
 }
-
-.small-text{
-  font-size: 14px;
-  font-weight: 200;
-}
-
 </style>

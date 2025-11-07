@@ -126,8 +126,8 @@ function reloadEvents(){
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  gap: 1rem;
-  padding: 2rem;
+  gap: 0.5rem;
+  padding: 1.5rem;
 
   flex: 0 0 auto;
   width: 100%;

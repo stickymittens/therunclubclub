@@ -21,6 +21,8 @@ const clubs = ref([])
 const loadingClubs = ref(true)
 const errorClubs = ref(null)
 
+const modalOpen = ref(false)
+
 const fetchCities = async() =>{
   try {
     const res = await axios.get('http://192.168.1.128:8080/cities')
@@ -99,64 +101,93 @@ const addEvent = async () => {
 
 <template>
   <div class="container">
-    <h2 >Add New Event</h2>
+    <h2 v-if="!modalOpen">+ Add  a new event</h2>
 
-    <form @submit.prevent="addEvent">
-      <div>
-        <label>Date</label>
-        <input type="date" v-model="date" />
-      </div>
+    <div v-else>
+      <form @submit.prevent="addEvent">
+        <div>
+          <label>Date</label>
+          <input type="date" v-model="date" />
+        </div>
 
-      <div>
-        <label>Time</label>
-        <input type="time" v-model="time" step="300"/>
-      </div>
+        <div>
+          <label>Time</label>
+          <input type="time" v-model="time" step="300"/>
+        </div>
 
-      <div>
-        <label>Distance</label>
-        <textarea v-model="distance"></textarea>
-      </div>
+        <div>
+          <label>Distance</label>
+          <textarea v-model="distance"></textarea>
+        </div>
 
-      <div>
-        <label>Pace</label>
-        <textarea v-model="pace"></textarea>
-      </div>
+        <div>
+          <label>Pace</label>
+          <textarea v-model="pace"></textarea>
+        </div>
 
-      <div>
-        <label>Meeting Point</label>
-        <textarea v-model="meetingPoint"></textarea>
-      </div>
+        <div>
+          <label>Meeting Point</label>
+          <textarea v-model="meetingPoint"></textarea>
+        </div>
 
-      <div>
-        <label>City</label>
-        <textarea v-model="city"></textarea>
-      </div>
+        <div>
+          <label>City</label>
+          <textarea v-model="city"></textarea>
+        </div>
 
-      <div>
-        <label>Club</label>
-        <select v-model="club">
-          <option
-              v-for="club in clubs"
-              :key="club.id"
-              :value="club">
-            {{ club.name }}
-          </option>
-        </select>
-      </div>
+        <div>
+          <label>Club</label>
+          <select v-model="club">
+            <option
+                v-for="club in clubs"
+                :key="club.id"
+                :value="club">
+              {{ club.name }}
+            </option>
+          </select>
+        </div>
 
-      <div>
-        <label>Description</label>
-        <textarea v-model="description"></textarea>
-      </div>
+        <div>
+          <label>Description</label>
+          <textarea v-model="description"></textarea>
+        </div>
 
 
-      <button type="submit">
-        Add Event
-      </button>
-    </form>
+        <button type="submit">
+          Add Event
+        </button>
+      </form>
 
-    <p v-if="message">{{ message }}</p>
+      <p v-if="message">{{ message }}</p>
+    </div>
   </div>
 </template>
+
+<style scoped>
+.container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  padding: 1.5rem;
+  margin: 1rem;
+
+
+  color: rgba(255, 255, 255, 0.8);  /* soft off-white text */
+  background: linear-gradient(180deg, rgba(46,139,255,0.12), rgba(24,24,24,1));
+  border: 1px dashed rgba(46, 139, 255, 0.4);
+  font-weight: 500;
+  cursor: pointer;
+  border-radius: 10px;
+  transition: box-shadow 0.2s ease;
+}
+
+.container:hover {
+  box-shadow: 0 0 12px rgba(46, 139, 255, 0.2);
+}
+
+
+
+</style>
 
 

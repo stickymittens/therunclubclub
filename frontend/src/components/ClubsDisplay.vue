@@ -119,7 +119,7 @@ function reloadClubs(){
   justify-content: center;
   align-items: center;
   gap: 1rem;
-  padding: 2rem;
+  padding: 1.5rem;
 
   flex: 0 0 auto;
   width: 100%;

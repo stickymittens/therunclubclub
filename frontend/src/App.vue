@@ -36,8 +36,8 @@
 
 <template>
   <header>
-    <div v-if="username">Logged in as: {{username}} </div>
-    <div v-else>Not logged in</div>
+<!--    <div v-if="username">Logged in as: {{username}} </div>-->
+<!--    <div v-else>Not logged in</div>-->
   </header>
 
   <main>
@@ -54,6 +54,9 @@
 <style scoped>
   .container{
     position: relative;
+    font-family: 'Inter', sans-serif;
+    padding: 0;
+    margin: 0;
   }
 
   .navbar{

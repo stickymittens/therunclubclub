@@ -38,7 +38,6 @@
 </script>
 
 <template>
-<!--  <CitiesModal v-if="citiesModalStore.visible" class="cities-modal"/>-->
   <div class="container">
 
     <div v-if="showLocationModal || citiesModalStore.visible" ref="modalBackground" class="modal-background"></div>
@@ -51,8 +50,9 @@
 <style scoped>
 .container{
   position: relative;
-  padding: 2rem 1rem;
   width: 100%;
+  padding: 0;
+  margin: 0;
 }
 
 .modal-background{

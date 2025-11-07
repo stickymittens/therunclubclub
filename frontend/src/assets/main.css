@@ -3,6 +3,7 @@
 #app {
     max-height: 100vh;
   margin: 0 auto;
+    padding: 0;
   font-weight: normal;
 
     background-color: #181818;

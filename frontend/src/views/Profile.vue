@@ -76,18 +76,21 @@ const leaveEvent = async (id) => {
 
 <template>
   <div class="container">
-    <div class="header-container">
-      <h1>PROFILE</h1>
-      <LogOutComponent/>
+
+    <div class="profile-head">
+      <div class="title">
+        <h1>PROFILE</h1>
+        <LogOutComponent/>
+        </div>
+
+      <ul class="bookmarks">
+        <li :class="{ active: activeTab === 'joined' }" @click="selectTab('joined')">Joined</li>
+
+        <li :class="{ active: activeTab === 'hosted' }" @click="selectTab('hosted')">Hosted</li>
+
+        <li :class="{ active: activeTab === 'myData' }" @click="selectTab('myData')">My Data</li>
+      </ul>
     </div>
-
-    <ul class="bookmarks">
-      <li :class="{ active: activeTab === 'joined' }" @click="selectTab('joined')">Joined</li>
-
-      <li :class="{ active: activeTab === 'hosted' }" @click="selectTab('hosted')">Hosted</li>
-
-      <li :class="{ active: activeTab === 'myData' }" @click="selectTab('myData')">My Data</li>
-    </ul>
 
     <div class="profile-body">
       <div v-if="activeTab === 'joined'">
@@ -108,25 +111,26 @@ const leaveEvent = async (id) => {
               <hr />
             </div>
           </div>
-
         </div>
-
       </div>
-      <div>
+
         <div v-if="activeTab === 'hosted'">
-          <ul class="clubs-carousel">
-            <li><ClubsDisplay/></li>
-            <li><AddClub/></li>
-          </ul>
+          <div class="carousel-container">
+            <h3>Hosted clubs</h3>
+            <ul class="clubs-carousel">
+              <li><ClubsDisplay/></li>
+              <li><AddClub/></li>
+            </ul>
+          </div>
 
-          <ul class="clubs-carousel">
-            <li><EventsDisplay/></li>
-            <li>+ Add a new event</li>
-          </ul>
+          <div class="carousel-container">
+            <h3>Hosted Events</h3>
+            <ul class="clubs-carousel">
+              <li><EventsDisplay/></li>
+              <li><AddEvent/></li>
+            </ul>
+          </div>
         </div>
-      </div>
-
-
     </div>
 
   </div>
@@ -134,55 +138,74 @@ const leaveEvent = async (id) => {
 
 <style scoped>
   .container{
-    color: white;
-    max-width: 430px;
-    max-height: 932px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
   }
 
   .message{
     background: #181818;
   }
 
-  .header-container{
+  .profile-head{
     display: flex;
-    align-items: center;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 20vh;
+
     background-color: #000000;
   }
 
-  h1{
-    padding: 2rem 1rem;
-  }
-
-  .profile-body{
-    background-color: #181818;
-    margin: 0;
+  .title{
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    height: 10vh;
+    padding-top: 1rem;
+    padding-left: 1rem;
   }
 
   .bookmarks{
+    height: 10vh;
     list-style-type: none;
-
-    font-size: 12px;
 
     display: flex;
     justify-content: space-between;
+    align-items: flex-end;
 
-    margin: 0;
-
-    background-color: #000000;
     color: white;
     padding: 0 2rem;
   }
 
+
   .bookmarks li{
     color: white;
-    margin: 0;
-    padding: 1rem 2rem;
+    padding: 0.5rem 1rem;
     transition: color .12s ease, backgriund .12s ease, transform .08s ease;
   }
 
   .bookmarks li.active{
     background-color: #181818;
-    font-weight: 600;
+    text-decoration: underline;
+    text-decoration-thickness: 1px;
+    text-underline-offset: 0.2rem;
+  }
+
+  .profile-body{
+    height: 100vw;
+    margin: 0;
+
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+  }
+
+  .carousel-container{
+    display: flex;
+    flex-direction: column;
+    border: 2px solid red;
+
+    padding-top: 1rem;
   }
 
   .clubs-carousel::-webkit-scrollbar {
@@ -191,9 +214,10 @@ const leaveEvent = async (id) => {
 
   .clubs-carousel{
     display: flex;
-    align-items: center;
     gap: 1rem;
     width: 100%;
+    max-height: 20vh;
+    box-sizing: border-box;
 
     overflow-x: auto;
     scroll-snap-type: x mandatory;
@@ -202,9 +226,6 @@ const leaveEvent = async (id) => {
     background-color: #181818;
     padding: 1rem 0;
     margin: 0;
-
-    height: max-content;
-    box-sizing: border-box;
   }
 
   .clubs-carousel > * {
@@ -216,10 +237,11 @@ const leaveEvent = async (id) => {
     flex: 0 0 auto;
     text-align: center;
 
+    width: clamp(250px, 80vw, 400px);
     min-width: 100%;
-    height: 100%;
     padding: 0;
-    margin: 0;
+    margin: 0 2rem;
+    box-sizing: border-box;
 
     border-radius: 12px;
     color: #fff;

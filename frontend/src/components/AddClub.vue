@@ -8,6 +8,8 @@
   const message = ref('');
   const club = ref({})
 
+  const modalOpen = ref(false)
+
   const addClub = async () => {
     club.value = {
       clubName: clubName.value,
@@ -72,6 +74,9 @@
   flex-direction: column;
   gap: 1rem;
   padding: 1.5rem;
+
+  max-height: 20vh;
+  box-sizing: border-box;
 
   color: rgba(255, 255, 255, 0.8);  /* soft off-white text */
   background: linear-gradient(180deg, rgba(251,86,36,0.12), rgba(24,24,24,1));
