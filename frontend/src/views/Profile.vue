@@ -66,7 +66,6 @@ const leaveEvent = async (id) => {
           })
       message.value = `Left successfully!`;
     }
-    reloadJoinedEvents()
   } catch (error) {
     console.error(error);
     message.value = "Error leaving";
@@ -210,12 +209,13 @@ const leaveEvent = async (id) => {
     display: flex;
     flex-direction: column;
     gap: 2rem;
+
+    padding: 1rem;
   }
 
   .carousel-container{
     display: flex;
     flex-direction: column;
-    border: 2px solid red;
 
     padding-top: 1rem;
   }

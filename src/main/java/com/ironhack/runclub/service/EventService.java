@@ -48,6 +48,11 @@ public class EventService {
                 .orElseThrow(() -> new NoItemWithThisId("No event with this ID"));
     }
 
+    public List<Event> getEventsByClub(String clubName){
+        Club club = clubRepository.getClubByClubName(clubName);
+        return eventRepository.findEventsByClub(club);
+    }
+
     //update
     //create update for each field
 

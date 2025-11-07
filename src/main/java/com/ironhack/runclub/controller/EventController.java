@@ -1,6 +1,7 @@
 package com.ironhack.runclub.controller;
 
 import com.ironhack.runclub.enums.CitiesEnum;
+import com.ironhack.runclub.model.Club;
 import com.ironhack.runclub.model.Event;
 import com.ironhack.runclub.model.User;
 import com.ironhack.runclub.service.EventService;
@@ -40,6 +41,10 @@ public class EventController {
         return eventService.getEventById(id);
     }
 
+    @GetMapping("/events/by-club")
+    public List<Event> getEventsByClubs(@RequestParam String clubName){
+        return eventService.getEventsByClub(clubName);
+    }
     //update
     //create update for each field
 

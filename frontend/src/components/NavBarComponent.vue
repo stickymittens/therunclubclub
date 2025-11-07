@@ -86,10 +86,10 @@ li{
 .dot {
   position: absolute;
   bottom: 1rem;
-  left: 38vw;
+  left: 40vw;
 
-  height: 24vw;
-  width: 24vw;
+  height: 18vw;
+  width: 18vw;
   border-radius: 50%;
 
   border: 2px solid #FB5624;

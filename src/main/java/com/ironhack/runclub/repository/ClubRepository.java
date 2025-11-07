@@ -12,4 +12,6 @@ import java.util.Optional;
 public interface ClubRepository extends JpaRepository<Club, Long> {
     Optional<Club> findClubById(Long id);
     Optional<List<Club>> findClubsByClubOwner(User clubOwner);
+
+    Club getClubByClubName(String clubName);
 }
