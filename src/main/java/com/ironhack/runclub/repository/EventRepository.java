@@ -1,6 +1,7 @@
 package com.ironhack.runclub.repository;
 
 import com.ironhack.runclub.enums.CitiesEnum;
+import com.ironhack.runclub.model.Club;
 import com.ironhack.runclub.model.Event;
 import com.ironhack.runclub.model.User;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -21,4 +22,6 @@ public interface EventRepository extends JpaRepository<Event, Long> {
     Optional<List<Event>> findEventsByCityAndDistanceBetween(CitiesEnum city, double minDistance, double maxDistance);
 
     Optional<List<Event>> findEventsByEventOwner(User eventOwner);
+
+    List<Event> findEventsByClub(Club club);
 }

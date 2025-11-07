@@ -143,9 +143,10 @@ const leaveEvent = async (id) => {
       <div v-else-if="error" class="error">{{ error }}</div>
 
       <div v-else>
-        <h1 class="header-container">
-          {{event.club.clubName}}
-        </h1>
+        <div class="profile-head">
+          <h1 class="title">{{event.club.clubName}}</h1>
+          <p></p>
+        </div>
 
         <div class="body-container">
           <p>{{ formatTime(event.dateTime) }}</p>
@@ -159,7 +160,7 @@ const leaveEvent = async (id) => {
 
     <div v-if="username">
       <button v-if="checkIfUserSignedUp()" @click="leaveEvent(event.id)">Leave the run</button>
-      <button v-else ref="joinRun" @click="joinEvent(event.id)">Join the run</button>
+      <button v-else ref="joinRun" @click="joinEvent(event.id)" class="join-btn">Join the run</button>
     </div>
 
     <p>{{message}}</p>
@@ -173,36 +174,50 @@ const leaveEvent = async (id) => {
   display: flex;
   flex-direction: column;
   gap: 2rem;
-  padding: 0 1rem;
 
   width: 100%;
 }
 
-h1{
-  height: 2rem;
+.profile-head{
   display: flex;
-  align-items: center;
-  font-weight: 800;
+  flex-direction: column;
+  justify-content: space-between;
+  height: 20vh;
 
-  background-color: pink;
+  background-color: #000000;
+  border-bottom: 1px solid #FB5624;
+
+  padding-top: 1rem;
+  padding-left: 1rem;
+  text-transform: uppercase;
 }
 
-
-.header-container{
-  display: flex;
-  align-items: center;
-
-  height: 6rem;
-}
 
 .body-container{
+  padding: 1rem;
+
   display: flex;
   justify-content: space-between;
   align-items: center;
 
-  height: 6rem;
+  font-size: 16px;
+}
 
-  font-size: 20px;
+.join-btn {
+  margin-top: 0.4rem;
+  background-color: #fb5624;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+  font-size: 0.85rem;
+  padding: 0.4rem 0.8rem;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.join-btn:hover {
+  background-color: #ff6a3c;
 }
 
 </style>

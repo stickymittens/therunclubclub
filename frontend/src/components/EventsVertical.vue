@@ -227,7 +227,6 @@ function resetFilters(){
   <div v-if="filterModalVisible" ref="filterModal">
 
     <div v-if="selectedFilter === 'pace'" class="filter-modal">
-      <p>Currently available paces:</p>
       <FilterInput
           label="Pace (min/km)"
           :min="minPace"
@@ -236,11 +235,10 @@ function resetFilters(){
           :decimalPlaces="2"
           @updateFilters="updatePace"
       />
-      <button @click="resetPace()" class="small-text">Reset</button>
+      <button @click="resetPace()" class="small-text reset-filters-btn">Reset</button>
     </div>
 
     <div v-if="selectedFilter === 'distance'" class="filter-modal">
-      <p>Currently available distances:</p>
       <FilterInput
           label="Distance (km)"
           :min="minDistance"
@@ -249,7 +247,7 @@ function resetFilters(){
           :decimalPlaces="1"
           @updateFilters="updateDistance"
       />
-      <button @click="resetDistance()" class="small-text">Reset</button>
+      <button @click="resetDistance()" class="small-text reset-filters-btn">Reset</button>
     </div>
   </div>
 
@@ -272,14 +270,14 @@ function resetFilters(){
           <li ref="paceFilter" class="filter" :class="{ selected: selectedFilter === 'pace' }" @click.stop="selectFilter('pace')">Pace</li>
           <li ref="distanceFilter" class="filter" :class="{ selected: selectedFilter === 'distance' }" @click.stop="selectFilter('distance')">Distance</li>
         </ul>
-        <button class="small-text reset-filters-btn" @click="resetFilters()">Reset filters</button>
+        <button class="small-text reset-filters-btn" @click="resetFilters()">reset filters</button>
       </div>
     </div>
 
 
     <div class="profile-body">
-      <div v-if="loading">Loading events...</div>
-      <div v-else-if="error" class="error">{{ error }}</div>
+      <div v-if="loading" class="assisting-text">Loading events...</div>
+      <div v-else-if="error" class="error assisting-text">{{ error }}</div>
       <div v-else>
         <div v-for="group in groupedEvents" :key="group.label" class="date-block">
           <h2 class="date-header">{{ group.label }}</h2>
@@ -288,7 +286,7 @@ function resetFilters(){
               <div class="hour-club-pace">
                 <div class="hour-club">
                   <p>{{ formatTime(event.dateTime) }}</p>
-                  <p class="club">{{event.city}}</p>
+                  <p class="club">{{event.club.clubName}}</p>
                 </div>
                 <p class="small-text">{{ event.distance }} km - {{ formatPace(event.pace) }} min/km</p>
               </div>
@@ -314,29 +312,28 @@ function resetFilters(){
   flex-direction: column;
 }
 
+.assisting-text{
+  position: fixed;
+  top: calc((100vh - 20vh) / 2);
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
 .error {
   background-color: #181818;
   color: white;
 }
 
-ul{
-  list-style: none;
-}
-
-.small-text{
-  font-size: 12px;
-  font-weight: 200;
-  background-color: inherit;
-  border: none;
-  color: #FB5624;
-}
-
 .cities-modal{
-  position: absolute;
+  position: fixed;
+  top: 10vh;
+  left: 1rem;
   width: 80vw;
-  top: 6rem;
-  left: 10vw;
   z-index: 1001;
+
+  background-color: #181818;
+  color: white;
+  border: 1px solid #FB5624;
 }
 
 .filter-modal{
@@ -351,11 +348,13 @@ ul{
   color: white;
   background-color: #181818;
   z-index: 1001;
+  border-top: 1px solid #FB5624;
 
   display: flex;
   flex-direction: column;
   justify-content: center;
   align-items: center;
+  gap: 1rem;
 }
 
 .modal-background{
@@ -380,6 +379,8 @@ ul{
   height: 20vh;
   background-color: #000000;
   z-index: 101;
+
+  border-bottom: 1px solid #FB5624;
 }
 
 .title{
@@ -389,6 +390,10 @@ ul{
   height: 10vh;
   padding-top: 1rem;
   padding-left: 1rem;
+}
+
+.reset-filters-btn{
+  color: #FB5624;
 }
 
 .change-city-btn{
@@ -429,41 +434,62 @@ ul{
 .profile-body {
   overflow-y: auto;
   margin-bottom: 15vh;
-  padding: 1rem;
+  padding: 0 1rem;
+
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;
+}
+
+.profile-body::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+ul{
+  list-style: none;
+  padding: 0;
+  margin: 0;
 }
 
 .date-header{
   font-size: 20px;
   font-weight: 800;
   border-bottom: 1px solid white;
-  margin-bottom: 1rem;
-  padding: 0;
+  margin-top: 1rem;
 }
 
 .event{
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  padding: 0 0 1rem 0;
-  margin: 0;
-  background-color: green;
+  margin: 1.5rem 0;
+  font-size: 16px;
 }
 
 .hour-club-pace{
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
 .hour-club{
   display: flex;
   gap: 1rem;
+  color: white;
 }
 
 .club{
   font-weight: 800;
+  text-transform: uppercase;
 }
 
 .invisible-time{
   visibility: hidden;
+}
+
+.small-text{
+  font-size: 14px;
+  font-weight: 200;
+  background-color: inherit;
+  border: none;
 }
 </style>

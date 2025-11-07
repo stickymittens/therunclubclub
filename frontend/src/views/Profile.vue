@@ -144,6 +144,7 @@ const leaveEvent = async (id) => {
   }
 
   .message{
+
     background: #181818;
   }
 
@@ -154,6 +155,7 @@ const leaveEvent = async (id) => {
     height: 20vh;
 
     background-color: #000000;
+    border-bottom: 1px solid #FB5624;
   }
 
   .title{
@@ -182,6 +184,8 @@ const leaveEvent = async (id) => {
     color: white;
     padding: 0.5rem 1rem;
     transition: color .12s ease, backgriund .12s ease, transform .08s ease;
+    z-index: 101;
+    margin: 1px 1px 0 1px;
   }
 
   .bookmarks li.active{
@@ -189,6 +193,14 @@ const leaveEvent = async (id) => {
     text-decoration: underline;
     text-decoration-thickness: 1px;
     text-underline-offset: 0.2rem;
+
+    margin: 0;
+    border-top: 1px solid #FB5624;
+    border-left: 1px solid #FB5624;
+    border-right: 1px solid #FB5624;
+
+    position: relative;
+    top: 1.5px;
   }
 
   .profile-body{

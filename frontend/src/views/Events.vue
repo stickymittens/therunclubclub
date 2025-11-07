@@ -53,6 +53,7 @@
   width: 100%;
   padding: 0;
   margin: 0;
+
 }
 
 .modal-background{
@@ -61,7 +62,7 @@
   bottom: 0;
   height: 100vh;
   width: 100vw;
-  background-color: black;
+  background-color: #000000;
   opacity: 0.8;
   z-index: 100;
 }

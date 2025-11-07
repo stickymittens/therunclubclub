@@ -66,13 +66,17 @@ watch([() => props.min, () => props.max], ([newMin, newMax]) => {
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
+  gap: 1rem;
+}
+
+label{
+  font-size: 20px;
 }
 
 .inputs {
   display: flex;
   align-items: center;
-  gap: 8px;
+  gap: 1rem;
 }
 
 .inputs input {

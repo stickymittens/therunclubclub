@@ -78,6 +78,15 @@ import {ref, onMounted, onBeforeUnmount} from 'vue'
   overflow-y: auto;
 }
 
+.container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari, Edge */
+}
+
+.container {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
+
 ul{
   list-style-type: none;
 
@@ -90,5 +99,9 @@ ul{
 li{
   padding: 0.5rem 0;
   border-bottom: 0.5px solid #A6A6A6;
+}
+
+li:last-child {
+  border-bottom: none;
 }
 </style>
